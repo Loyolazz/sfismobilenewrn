@@ -11,7 +11,8 @@ import {
 } from "react-native";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
-import { LinearGradient } from 'expo-linear-gradient'
+import { LinearGradient } from "../../src/lib/nativewind-interop";
+import { usuarioAutenticar } from "../../src/api/usuarioAutenticar";
 
 export default function Login() {
     const router = useRouter();
@@ -27,10 +28,11 @@ export default function Login() {
     async function onEntrar() {
         try {
             setLoading(true);
-            // TODO: autenticar (SOAP/REST) e guardar sessão (SecureStore/AsyncStorage)
+            await usuarioAutenticar(usuario, senha);
             router.replace("/HomeFiscalizacao");
         } catch (e) {
             console.error(e);
+        } finally {
             setLoading(false);
         }
     }
