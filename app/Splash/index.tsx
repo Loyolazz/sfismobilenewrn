@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { Image, ImageBackground, Text, View, StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
@@ -24,29 +25,31 @@ export default function Splash() {
     }, [router]);
 
     return (
-        <ImageBackground
-            source={require("../../assets/background/fundo-release.png")}
-            resizeMode="cover"
-            style={styles.background}
-        >
-            <LinearGradient
-                colors={["rgba(8,41,60,0.85)", "rgba(8,41,60,0.92)"]}
-                style={StyleSheet.absoluteFillObject}
-            />
-
-            <View style={styles.center}>
-                <Image
-                    source={require("../../assets/icon/logo-navbar@1,5x.png")}
-                    resizeMode="contain"
-                    style={styles.logo}
+        <SafeAreaView style={{ flex: 1 }}>
+            <ImageBackground
+                source={require("../../assets/background/fundo-release.png")}
+                resizeMode="cover"
+                style={styles.background}
+            >
+                <LinearGradient
+                    colors={["rgba(8,41,60,0.85)", "rgba(8,41,60,0.92)"]}
+                    style={StyleSheet.absoluteFillObject}
                 />
-                <Text style={styles.versionTop}>{version}</Text>
-            </View>
 
-            <View style={styles.versionContainer}>
-                <Text style={styles.versionBottom}>{version}</Text>
-            </View>
-        </ImageBackground>
+                <View style={styles.center}>
+                    <Image
+                        source={require("../../assets/icon/logo-navbar@1,5x.png")}
+                        resizeMode="contain"
+                        style={styles.logo}
+                    />
+                    <Text style={styles.versionTop}>{version}</Text>
+                </View>
+
+                <View style={styles.versionContainer}>
+                    <Text style={styles.versionBottom}>{version}</Text>
+                </View>
+            </ImageBackground>
+        </SafeAreaView>
     );
 }
 

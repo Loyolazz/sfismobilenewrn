@@ -11,6 +11,7 @@ import {
     StyleSheet,
     // Image,
 } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
@@ -93,7 +94,7 @@ export default function LoginScreen() {
     }
 
     return (
-        <View style={styles.background}>
+        <SafeAreaView style={styles.background}>
             <LinearGradient
                 colors={["#0B3B52", "#071F2B"]}
                 style={StyleSheet.absoluteFillObject}
@@ -163,7 +164,7 @@ export default function LoginScreen() {
                     <Text style={styles.version}>v{version}</Text>
                 </View>
             </KeyboardAvoidingView>
-        </View>
+        </SafeAreaView>
     );
 }
 
