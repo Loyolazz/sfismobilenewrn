@@ -35,6 +35,13 @@ export default function Notificacoes() {
 
   return (
     <SafeAreaView style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <MaterialIcons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Notificações</Text>
+        <View style={{ width: 24 }} />
+      </View>
       <FlatList
         data={dados}
         keyExtractor={(item) => String(item.IDMensagemPush)}
