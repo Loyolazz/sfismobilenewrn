@@ -15,7 +15,7 @@ export default function RootLayout() {
             >
                 <Stack.Screen name="Splash/index" options={{}} />
                 <Stack.Screen name="Login/index" options={{}} />
-                {/* Você pode adicionar Home aqui depois */}
+                <Stack.Screen name="HomeFiscalizacao/index" options={{}} />
             </Stack>
         </>
     );
