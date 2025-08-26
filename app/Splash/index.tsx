@@ -2,7 +2,8 @@ import { useEffect } from "react";
 import { Image, ImageBackground, Text, View } from "react-native";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
-import { LinearGradient } from 'expo-linear-gradient'
+import { LinearGradient } from "../../src/lib/nativewind-interop";
+import { ensureLatestVersion } from "../../src/lib/version";
 
 export default function Splash() {
     const router = useRouter();
@@ -12,8 +13,13 @@ export default function Splash() {
         "1.0.0";
 
     useEffect(() => {
-        const t = setTimeout(() => router.replace("/Login"), 1200);
-        return () => clearTimeout(t);
+        async function init() {
+            const ok = await ensureLatestVersion();
+            if (ok) {
+                router.replace("/Login");
+            }
+        }
+        init();
     }, [router]);
 
     return (
