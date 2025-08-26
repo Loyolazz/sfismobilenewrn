@@ -3,6 +3,7 @@ import { soapRequest } from "./antaq";
 /** Estrutura típica que volta do serviço (ajuste/estenda se necessário) */
 export type Servidor = {
   IDUsuario?: string | number;
+  IDPerfilFiscalizacao?: string | number;
   NOLoginUsuario?: string;
   EEFuncionario?: string;
   NRMatricula?: string;
