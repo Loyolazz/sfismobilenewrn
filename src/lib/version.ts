@@ -21,6 +21,11 @@ export function getBuildNumber() {
 export async function ensureLatestVersion() {
   const current = getAppVersion();
   const latest = await fetchVersion();
+
+  // Exibe a versão atual do app e a versão disponível na API
+  console.log("Versão atual do app:", current);
+  console.log("Versão disponibilizada pela API:", latest);
+
   if (latest && latest !== current) {
     const url = `${APK_HOST}${APK_PATH}/${APK_NAME}-${latest}.apk`;
     await Linking.openURL(url);

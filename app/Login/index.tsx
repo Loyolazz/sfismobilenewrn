@@ -65,6 +65,10 @@ export default function LoginScreen() {
             }
             const { token, servidor } = await usuarioAutenticar(usuario, senha);
 
+            // Confirma no console que o login ocorreu com sucesso
+            console.log("Token recebido:", token);
+            console.log("Informações do usuário:", servidor);
+
             // mantém conectado 14 dias
             if (keepConnected) {
                 await saveSession({ token, usuario: servidor }, true, 14);
