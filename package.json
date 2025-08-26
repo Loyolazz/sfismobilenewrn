@@ -1,6 +1,6 @@
 {
   "name": "sfismobile2",
-  "version": "1.0.0",
+  "version": "1.2.11",
   "main": "index.ts",
   "scripts": {
     "start": "expo start",
@@ -16,6 +16,7 @@
     "axios": "^1.10.0",
     "cors": "^2.8.5",
     "expo": "~53.0.22",
+    "expo-application": "^6.1.5",
     "expo-build-properties": "~0.14.8",
     "expo-constants": "~17.1.7",
     "expo-intent-launcher": "^12.1.5",
