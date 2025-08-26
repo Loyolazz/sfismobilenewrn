@@ -5,6 +5,10 @@ export default StyleSheet.create({
         flex: 1,
         backgroundColor: '#0F3C52',
     },
+    drawerSafe: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
     scroll: {
         flex: 1,
         backgroundColor: '#fff',
@@ -52,25 +56,26 @@ export default StyleSheet.create({
     drawerContent: {
         flex: 1,
         paddingTop: 0,
+        backgroundColor: '#fff',
     },
     userSection: {
-        backgroundColor: '#0F3C52',
         paddingVertical: 20,
         alignItems: 'center',
+        backgroundColor: '#fff',
     },
     userAvatar: {
-        width: 64,
-        height: 64,
-        borderRadius: 32,
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        marginBottom: 8,
     },
     userName: {
-        marginTop: 10,
-        color: '#fff',
+        color: '#0F3C52',
         fontWeight: 'bold',
         textAlign: 'center',
     },
     userInfo: {
-        color: '#fff',
+        color: '#0F3C52',
         fontSize: 12,
         textAlign: 'center',
     },
@@ -78,10 +83,11 @@ export default StyleSheet.create({
         flexDirection: 'row',
         alignItems: 'center',
         padding: 16,
-        backgroundColor: '#0F3C52',
+        borderTopWidth: 1,
+        borderColor: '#eee',
     },
     logoutText: {
-        color: '#fff',
+        color: '#0F3C52',
         marginLeft: 8,
         fontWeight: 'bold',
     },

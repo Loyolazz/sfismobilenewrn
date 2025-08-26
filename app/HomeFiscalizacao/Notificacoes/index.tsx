@@ -1,0 +1,58 @@
+import React, { useEffect, useState } from 'react';
+import { View, Text, TouchableOpacity, FlatList } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import styles from './styles';
+import { listarMensagensPush, MensagemPush } from '@/src/api/notificacoes';
+import { loadSession } from '@/src/services/session';
+
+export default function Notificacoes({ navigation }: any) {
+  const [dados, setDados] = useState<MensagemPush[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const session = await loadSession();
+      const idPerfil = session?.usuario?.IDPerfilFiscalizacao;
+      if (!idPerfil) return;
+      try {
+        const res = await listarMensagensPush(idPerfil);
+        setDados(res);
+      } catch (e) {
+        console.error(e);
+      }
+    }
+    fetchData();
+  }, []);
+
+  function renderItem({ item }: { item: MensagemPush }) {
+    return (
+      <View style={styles.card}>
+        <Text style={styles.title}>{item.DSTituloMensagemPush}</Text>
+        <Text style={styles.message}>{item.DSMensagemPush}</Text>
+        <Text style={styles.date}>{item.DTEnvio}</Text>
+      </View>
+    );
+  }
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+          <MaterialIcons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <Text style={styles.headerTitle}>Notificações</Text>
+        <View style={{ width: 24 }} />
+      </View>
+
+      <FlatList
+        data={dados}
+        keyExtractor={(item) => String(item.IDMensagemPush)}
+        renderItem={renderItem}
+        contentContainerStyle={styles.list}
+        initialNumToRender={10}
+        windowSize={5}
+        maxToRenderPerBatch={10}
+        removeClippedSubviews
+      />
+    </View>
+  );
+}
