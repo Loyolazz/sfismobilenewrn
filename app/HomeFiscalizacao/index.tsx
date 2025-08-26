@@ -6,7 +6,6 @@ import {
     ScrollView,
     TouchableOpacity,
 } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
@@ -16,6 +15,7 @@ import {
 import { MaterialIcons } from '@expo/vector-icons';
 import { loadSession } from '@/src/services/session';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
+
 
 const Drawer = createDrawerNavigator();
 
@@ -34,10 +34,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
     }, []);
 
     return (
-        <DrawerContentScrollView
-            {...props}
-            contentContainerStyle={styles.drawerContent}
-        >
+        <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
             <View style={styles.userSection}>
                 <MaterialIcons name="person" size={64} color="#fff" />
                 <Text style={styles.userName}>
@@ -70,16 +67,14 @@ function HomeScreen({ navigation }: any) {
                 <Text style={styles.headerTitle}>SFISMobile</Text>
                 <MaterialIcons name="notifications" size={24} color="#fff" />
             </View>
+
             <Text style={styles.question}>O que deseja fazer hoje?</Text>
+
             {items.map((item) => (
                 <TouchableOpacity key={item.key} style={styles.card}>
-                    <MaterialIcons name={item.icon} size={24} color="#0F3C52" />
+                    <MaterialIcons name={item.icon as any} size={24} color="#0F3C52" />
                     <Text style={styles.cardText}>{item.title}</Text>
-                    <MaterialIcons
-                        name="chevron-right"
-                        size={24}
-                        color="#0F3C52"
-                    />
+                    <MaterialIcons name="chevron-right" size={24} color="#0F3C52" />
                 </TouchableOpacity>
             ))}
         </ScrollView>
@@ -87,27 +82,26 @@ function HomeScreen({ navigation }: any) {
 }
 
 export default function HomeFiscalizacao() {
+    // ✅ Sem NavigationContainer aqui
     return (
-        <NavigationContainer independent>
-            <Drawer.Navigator
-                screenOptions={{
-                    headerShown: false,
-                    drawerActiveTintColor: '#0F3C52',
+        <Drawer.Navigator
+            screenOptions={{
+                headerShown: false,
+                drawerActiveTintColor: '#0F3C52',
+            }}
+            drawerContent={(props) => <CustomDrawerContent {...props} />}
+        >
+            <Drawer.Screen
+                name="Home"
+                component={HomeScreen}
+                options={{
+                    drawerIcon: ({ color, size }) => (
+                        <MaterialIcons name="home" color={color} size={size} />
+                    ),
+                    drawerLabel: 'Início',
                 }}
-                drawerContent={(props) => <CustomDrawerContent {...props} />}
-            >
-                <Drawer.Screen
-                    name="Home"
-                    component={HomeScreen}
-                    options={{
-                        drawerIcon: ({ color, size }) => (
-                            <MaterialIcons name="home" color={color} size={size} />
-                        ),
-                        drawerLabel: 'Início',
-                    }}
-                />
-            </Drawer.Navigator>
-        </NavigationContainer>
+            />
+        </Drawer.Navigator>
     );
 }
 
@@ -174,4 +168,3 @@ const styles = StyleSheet.create({
         textAlign: 'center',
     },
 });
-

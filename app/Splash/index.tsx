@@ -10,7 +10,7 @@ export default function Splash() {
     const version =
         Constants.expoConfig?.version ??
         Constants.manifest?.version ??
-        "1.0.0";
+        "1.2.11";
 
     useEffect(() => {
         async function init() {
