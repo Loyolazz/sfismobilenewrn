@@ -4,9 +4,9 @@ import {
   Text,
   ScrollView,
   TouchableOpacity,
-  SafeAreaView,
   Image,
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   createDrawerNavigator,
   DrawerContentScrollView,
@@ -34,6 +34,19 @@ import Notificacoes from './Notificacoes';
 
 
 const Drawer = createDrawerNavigator();
+
+const defaultScreenOptions = ({ navigation }: any) => ({
+    headerStyle: { backgroundColor: '#0F3C52' },
+    headerTintColor: '#fff',
+    headerTitleAlign: 'center',
+    drawerActiveTintColor: '#0F3C52',
+    headerLeft: () => (
+        <TouchableOpacity onPress={() => navigation.goBack()}>
+            <MaterialIcons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+    ),
+    swipeEnabled: false,
+});
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
     const router = useRouter();
@@ -126,16 +139,15 @@ export default function HomeFiscalizacao() {
     // ✅ Sem NavigationContainer aqui
     return (
         <Drawer.Navigator
-            screenOptions={{
-                headerShown: false,
-                drawerActiveTintColor: '#0F3C52',
-            }}
+            screenOptions={defaultScreenOptions}
             drawerContent={(props) => <CustomDrawerContent {...props} />}
         >
             <Drawer.Screen
                 name="Home"
                 component={HomeScreen}
                 options={{
+                    headerShown: false,
+                    swipeEnabled: true,
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="home" color={color} size={size}/>
                     ),
@@ -146,6 +158,7 @@ export default function HomeFiscalizacao() {
                 name="MinhasFiscalizacoes"
                 component={MinhasFiscalizacoes}
                 options={{
+                    title: 'Minhas Fiscalizações',
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="assignment" color={color} size={size} />
                     ),
@@ -156,6 +169,7 @@ export default function HomeFiscalizacao() {
                 name="FiscalizacaoRotina"
                 component={FiscalizacaoRotina}
                 options={{
+                    title: 'Fiscalizações de Rotina',
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="sync" color={color} size={size} />
                     ),
@@ -166,6 +180,7 @@ export default function HomeFiscalizacao() {
                 name="ConsultarAutorizadas"
                 component={ConsultarAutorizadas}
                 options={{
+                    title: 'Consultar Autorizadas',
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="search" color={color} size={size} />
                     ),
@@ -176,6 +191,7 @@ export default function HomeFiscalizacao() {
                 name="RelatorioUsuario"
                 component={RelatorioUsuario}
                 options={{
+                    title: 'Relatório do Usuário',
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="description" color={color} size={size} />
                     ),
@@ -186,6 +202,7 @@ export default function HomeFiscalizacao() {
                 name="Antaq"
                 component={Antaq}
                 options={{
+                    title: 'A ANTAQ',
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="info" color={color} size={size} />
                     ),
@@ -196,6 +213,7 @@ export default function HomeFiscalizacao() {
                 name="Tutorial"
                 component={Tutorial}
                 options={{
+                    title: 'Tutorial',
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="menu-book" color={color} size={size} />
                     ),
@@ -206,6 +224,7 @@ export default function HomeFiscalizacao() {
                 name="NovidadesVersao"
                 component={NovidadesVersao}
                 options={{
+                    title: 'Novidades da Versão',
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="new-releases" color={color} size={size} />
                     ),
@@ -216,6 +235,7 @@ export default function HomeFiscalizacao() {
                 name="SituacaoServico"
                 component={SituacaoServico}
                 options={{
+                    title: 'Situação do Serviço',
                     drawerIcon: ({color, size}) => (
                         <MaterialIcons name="wifi" color={color} size={size} />
                     ),
@@ -225,27 +245,27 @@ export default function HomeFiscalizacao() {
             <Drawer.Screen
                 name="EmAndamento"
                 component={EmAndamento}
-                options={{ drawerItemStyle: { display: 'none' } }}
+                options={{ title: 'Em Andamento', drawerItemStyle: { display: 'none' } }}
             />
             <Drawer.Screen
                 name="PainelEmpresas"
                 component={PainelEmpresas}
-                options={{ drawerItemStyle: { display: 'none' } }}
+                options={{ title: 'Painel de Empresas', drawerItemStyle: { display: 'none' } }}
             />
             <Drawer.Screen
                 name="EsquemasOperacionais"
                 component={EsquemasOperacionais}
-                options={{ drawerItemStyle: { display: 'none' } }}
+                options={{ title: 'Esquemas Operacionais', drawerItemStyle: { display: 'none' } }}
             />
             <Drawer.Screen
                 name="ServicosNaoAutorizados"
                 component={ServicosNaoAutorizados}
-                options={{ drawerItemStyle: { display: 'none' } }}
+                options={{ title: 'Serviços Não Autorizados', drawerItemStyle: { display: 'none' } }}
             />
             <Drawer.Screen
                 name="Notificacoes"
                 component={Notificacoes}
-                options={{ drawerItemStyle: { display: 'none' } }}
+                options={{ title: 'Notificações', drawerItemStyle: { display: 'none' } }}
             />
         </Drawer.Navigator>
     );

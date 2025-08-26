@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, TouchableOpacity, FlatList } from 'react-native';
-import { MaterialIcons } from '@expo/vector-icons';
+import { View, Text, FlatList } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import { listarMensagensPush, MensagemPush } from '@/src/api/notificacoes';
 import { loadSession } from '@/src/services/session';
 
-export default function Notificacoes({ navigation }: any) {
+export default function Notificacoes() {
   const [dados, setDados] = useState<MensagemPush[]>([]);
 
   useEffect(() => {
@@ -34,15 +34,7 @@ export default function Notificacoes({ navigation }: any) {
   }
 
   return (
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
-          <MaterialIcons name="arrow-back" size={24} color="#fff" />
-        </TouchableOpacity>
-        <Text style={styles.headerTitle}>Notificações</Text>
-        <View style={{ width: 24 }} />
-      </View>
-
+    <SafeAreaView style={styles.container}>
       <FlatList
         data={dados}
         keyExtractor={(item) => String(item.IDMensagemPush)}
@@ -53,6 +45,6 @@ export default function Notificacoes({ navigation }: any) {
         maxToRenderPerBatch={10}
         removeClippedSubviews
       />
-    </View>
+    </SafeAreaView>
   );
 }
