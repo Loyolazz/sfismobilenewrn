@@ -25,8 +25,8 @@ export async function usuarioAutenticar(
     senha: string
 ): Promise<AuthResult> {
   const parsed = await soapRequest("UsuarioAutenticar", {
-    pUsuario: usuario,
-    pSenha: senha,
+    loginUsuario: usuario,
+    senhaUsuario: senha,
   });
 
   // Exibe toda a resposta da API para conferência
