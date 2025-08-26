@@ -3,7 +3,7 @@ import { Image, ImageBackground, Text, View, StyleSheet } from "react-native";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
-import { ensureLatestVersion } from "../../src/lib/version";
+import { ensureLatestVersion } from "@/src/lib/version";
 
 export default function Splash() {
     const router = useRouter();
