@@ -3,11 +3,10 @@ module.exports = function (api) {
     api.cache(true);
     return {
         presets: [
-            ["babel-preset-expo", { jsxImportSource: "nativewind" }], // Expo + JSX do NativeWind
-            "nativewind/babel",                                       // <-- como PRESET
+            ["babel-preset-expo", { jsxImportSource: "nativewind" }], // Expo + NativeWind
         ],
         plugins: [
-            "expo-router/babel",                                      // Router continua como plugin
+            "nativewind/babel", // Mantém apenas o NativeWind
         ],
     };
 };
