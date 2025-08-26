@@ -69,10 +69,8 @@ export default function LoginScreen() {
             console.log("Token recebido:", token);
             console.log("Informações do usuário:", servidor);
 
-            // mantém conectado 14 dias
-            if (keepConnected) {
-                await saveSession({ token, usuario: servidor }, true, 14);
-            }
+            // salva sessão com ou sem manter conectado
+            await saveSession({ token, usuario: servidor }, keepConnected, 14);
 
             router.replace("/HomeFiscalizacao"); // substitui a rota atual (pós-login)
         } catch (e: any) {
