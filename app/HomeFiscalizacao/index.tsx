@@ -6,6 +6,7 @@ import {
     ScrollView,
     TouchableOpacity,
     SafeAreaView,
+    Image,
 } from 'react-native';
 import {
     createDrawerNavigator,
@@ -44,11 +45,20 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
             <View style={styles.userSection}>
-                <MaterialIcons name="person" size={64} color="#fff" />
+                {user?.Foto ? (
+                    <Image
+                        source={{ uri: `data:image/png;base64,${user.Foto}` }}
+                        style={styles.userAvatar}
+                    />
+                ) : (
+                    <MaterialIcons name="person" size={64} color="#fff" />
+                )}
                 <Text style={styles.userName}>
                     {user?.NOUsuario || user?.NOLoginUsuario || ''}
                 </Text>
-                <Text style={styles.userEmail}>{user?.EEFuncionario || ''}</Text>
+                <Text style={styles.userInfo}>
+                    {user?.NOUnidadeOrganizacional || user?.SGUnidade || ''}
+                </Text>
             </View>
             <DrawerItemList {...props} />
             <TouchableOpacity style={styles.logout} onPress={handleLogout}>
@@ -177,13 +187,18 @@ const styles = StyleSheet.create({
         paddingVertical: 20,
         alignItems: 'center',
     },
+    userAvatar: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+    },
     userName: {
         marginTop: 10,
         color: '#fff',
         fontWeight: 'bold',
         textAlign: 'center',
     },
-    userEmail: {
+    userInfo: {
         color: '#fff',
         fontSize: 12,
         textAlign: 'center',
