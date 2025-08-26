@@ -1,8 +1,8 @@
 import { useEffect } from "react";
-import { Image, ImageBackground, Text, View } from "react-native";
+import { Image, ImageBackground, Text, View, StyleSheet } from "react-native";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
-import { LinearGradient } from "../../src/lib/nativewind-interop";
+import { LinearGradient } from "expo-linear-gradient";
 import { ensureLatestVersion } from "../../src/lib/version";
 
 export default function Splash() {
@@ -26,25 +26,45 @@ export default function Splash() {
         <ImageBackground
             source={require("../../assets/background/fundo-release.png")}
             resizeMode="cover"
-            className="flex-1 bg-[#08293C]"
+            style={styles.background}
         >
             <LinearGradient
                 colors={["rgba(8,41,60,0.85)", "rgba(8,41,60,0.92)"]}
-                className="absolute inset-0"
+                style={StyleSheet.absoluteFillObject}
             />
 
-            <View className="flex-1 items-center justify-center gap-4">
+            <View style={styles.center}>
                 <Image
                     source={require("../../assets/icon/logo-navbar@1,5x.png")}
                     resizeMode="contain"
-                    className="w-52 h-28"
+                    style={styles.logo}
                 />
-                <Text className="text-white/90 text-sm">{version}</Text>
+                <Text style={styles.versionTop}>{version}</Text>
             </View>
 
-            <View className="absolute bottom-4 inset-x-0 items-center">
-                <Text className="text-white/80 text-xs">{version}</Text>
+            <View style={styles.versionContainer}>
+                <Text style={styles.versionBottom}>{version}</Text>
             </View>
         </ImageBackground>
     );
 }
+
+const styles = StyleSheet.create({
+    background: { flex: 1, backgroundColor: "#08293C" },
+    center: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 16,
+    },
+    logo: { width: 208, height: 112 },
+    versionTop: { color: "rgba(255,255,255,0.9)", fontSize: 14 },
+    versionContainer: {
+        position: "absolute",
+        bottom: 16,
+        left: 0,
+        right: 0,
+        alignItems: "center",
+    },
+    versionBottom: { color: "rgba(255,255,255,0.8)", fontSize: 12 },
+});
