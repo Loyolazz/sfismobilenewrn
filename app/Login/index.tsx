@@ -8,10 +8,11 @@ import {
     Text,
     TextInput,
     View,
+    StyleSheet,
 } from "react-native";
 import Constants from "expo-constants";
 import { useRouter } from "expo-router";
-import { LinearGradient } from "../../src/lib/nativewind-interop";
+import { LinearGradient } from "expo-linear-gradient";
 import { usuarioAutenticar } from "../../src/api/usuarioAutenticar";
 
 export default function Login() {
@@ -41,33 +42,33 @@ export default function Login() {
         <ImageBackground
             source={require("../../assets/background/fundo-release.png")}
             resizeMode="cover"
-            className="flex-1 bg-[#08293C]"
+            style={styles.background}
         >
             <LinearGradient
                 colors={["rgba(8,41,60,0.88)", "rgba(8,41,60,0.95)"]}
-                className="absolute inset-0"
+                style={StyleSheet.absoluteFillObject}
             />
 
             <KeyboardAvoidingView
-                className="flex-1"
+                style={styles.flex1}
                 behavior={Platform.select({ ios: "padding", android: undefined }) || undefined}
             >
-                <View className="flex-1 px-6 items-center justify-center gap-6">
+                <View style={styles.content}>
                     <Image
                         source={require("../../assets/icon/logo.png")}
                         resizeMode="contain"
-                        className="w-44 h-24 -mb-1"
+                        style={styles.logo}
                     />
 
-                    <View className="w-full max-w-[420px] rounded-xl p-5 bg-white/10 border border-white/20 gap-3">
-                        <Text className="text-white text-[20px] font-semibold">Entrar</Text>
+                    <View style={styles.form}>
+                        <Text style={styles.title}>Entrar</Text>
 
                         <TextInput
                             placeholder="Usuário / Matrícula"
                             placeholderTextColor="#9FB3C1"
                             value={usuario}
                             onChangeText={setUsuario}
-                            className="h-12 rounded-xl px-3 text-white bg-white/10 border border-white/20"
+                            style={styles.input}
                             autoCapitalize="none"
                             autoCorrect={false}
                             returnKeyType="next"
@@ -78,7 +79,7 @@ export default function Login() {
                             placeholderTextColor="#9FB3C1"
                             value={senha}
                             onChangeText={setSenha}
-                            className="h-12 rounded-xl px-3 text-white bg-white/10 border border-white/20"
+                            style={styles.input}
                             secureTextEntry
                             returnKeyType="go"
                             onSubmitEditing={onEntrar}
@@ -87,19 +88,66 @@ export default function Login() {
                         <Pressable
                             onPress={onEntrar}
                             disabled={loading || !usuario || !senha}
-                            className={`h-12 rounded-xl items-center justify-center bg-sky-500 mt-2 ${
-                                loading || !usuario || !senha ? "opacity-60" : "active:opacity-90"
-                            }`}
+                            style={({ pressed }) => [
+                                styles.button,
+                                (loading || !usuario || !senha) && styles.buttonDisabled,
+                                pressed && !(loading || !usuario || !senha) && styles.buttonPressed,
+                            ]}
                         >
-                            <Text className="text-white text-base font-bold">
+                            <Text style={styles.buttonText}>
                                 {loading ? "Validando..." : "Entrar"}
                             </Text>
                         </Pressable>
                     </View>
 
-                    <Text className="text-white/80">{version}</Text>
+                    <Text style={styles.version}>{version}</Text>
                 </View>
             </KeyboardAvoidingView>
         </ImageBackground>
     );
 }
+
+const styles = StyleSheet.create({
+    background: { flex: 1, backgroundColor: "#08293C" },
+    flex1: { flex: 1 },
+    content: {
+        flex: 1,
+        paddingHorizontal: 24,
+        alignItems: "center",
+        justifyContent: "center",
+        gap: 24,
+    },
+    logo: { width: 176, height: 96, marginBottom: -4 },
+    form: {
+        width: "100%",
+        maxWidth: 420,
+        borderRadius: 12,
+        padding: 20,
+        backgroundColor: "rgba(255,255,255,0.1)",
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.2)",
+        gap: 12,
+    },
+    title: { color: "#fff", fontSize: 20, fontWeight: "600" },
+    input: {
+        height: 48,
+        borderRadius: 12,
+        paddingHorizontal: 12,
+        color: "#fff",
+        backgroundColor: "rgba(255,255,255,0.1)",
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.2)",
+    },
+    button: {
+        height: 48,
+        borderRadius: 12,
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#0ea5e9",
+        marginTop: 8,
+    },
+    buttonPressed: { opacity: 0.9 },
+    buttonDisabled: { opacity: 0.6 },
+    buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
+    version: { color: "rgba(255,255,255,0.8)" },
+});
