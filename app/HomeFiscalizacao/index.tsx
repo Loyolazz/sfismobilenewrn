@@ -5,6 +5,7 @@ import {
     StyleSheet,
     ScrollView,
     TouchableOpacity,
+    SafeAreaView,
 } from 'react-native';
 import {
     createDrawerNavigator,
@@ -13,13 +14,15 @@ import {
     DrawerContentComponentProps,
 } from '@react-navigation/drawer';
 import { MaterialIcons } from '@expo/vector-icons';
-import { loadSession } from '@/src/services/session';
+import { useRouter } from 'expo-router';
+import { loadSession, clearSession } from '@/src/services/session';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
 
 
 const Drawer = createDrawerNavigator();
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
+    const router = useRouter();
     const [user, setUser] = useState<Servidor | null>(null);
 
     useEffect(() => {
@@ -33,6 +36,11 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
         })();
     }, []);
 
+    async function handleLogout() {
+        await clearSession();
+        router.replace('/Login');
+    }
+
     return (
         <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
             <View style={styles.userSection}>
@@ -43,6 +51,10 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
                 <Text style={styles.userEmail}>{user?.EEFuncionario || ''}</Text>
             </View>
             <DrawerItemList {...props} />
+            <TouchableOpacity style={styles.logout} onPress={handleLogout}>
+                <MaterialIcons name="logout" size={24} color="#fff" />
+                <Text style={styles.logoutText}>Sair</Text>
+            </TouchableOpacity>
         </DrawerContentScrollView>
     );
 }
@@ -59,7 +71,7 @@ function HomeScreen({ navigation }: any) {
     ];
 
     return (
-        <ScrollView contentContainerStyle={styles.container}>
+        <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
                 <TouchableOpacity onPress={() => navigation.openDrawer()}>
                     <MaterialIcons name="menu" size={28} color="#fff" />
@@ -68,16 +80,18 @@ function HomeScreen({ navigation }: any) {
                 <MaterialIcons name="notifications" size={24} color="#fff" />
             </View>
 
-            <Text style={styles.question}>O que deseja fazer hoje?</Text>
+            <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
+                <Text style={styles.question}>O que deseja fazer hoje?</Text>
 
-            {items.map((item) => (
-                <TouchableOpacity key={item.key} style={styles.card}>
-                    <MaterialIcons name={item.icon as any} size={24} color="#0F3C52" />
-                    <Text style={styles.cardText}>{item.title}</Text>
-                    <MaterialIcons name="chevron-right" size={24} color="#0F3C52" />
-                </TouchableOpacity>
-            ))}
-        </ScrollView>
+                {items.map((item) => (
+                    <TouchableOpacity key={item.key} style={styles.card}>
+                        <MaterialIcons name={item.icon as any} size={24} color="#0F3C52" />
+                        <Text style={styles.cardText}>{item.title}</Text>
+                        <MaterialIcons name="chevron-right" size={24} color="#0F3C52" />
+                    </TouchableOpacity>
+                ))}
+            </ScrollView>
+        </SafeAreaView>
     );
 }
 
@@ -106,9 +120,16 @@ export default function HomeFiscalizacao() {
 }
 
 const styles = StyleSheet.create({
+    safeArea: {
+        flex: 1,
+        backgroundColor: '#0F3C52',
+    },
+    scroll: {
+        flex: 1,
+        backgroundColor: '#fff',
+    },
     container: {
         flexGrow: 1,
-        backgroundColor: '#fff',
         paddingBottom: 20,
     },
     header: {
@@ -166,5 +187,16 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 12,
         textAlign: 'center',
+    },
+    logout: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        padding: 16,
+        backgroundColor: '#0F3C52',
+    },
+    logoutText: {
+        color: '#fff',
+        marginLeft: 8,
+        fontWeight: 'bold',
     },
 });
