@@ -8,10 +8,10 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
-  createDrawerNavigator,
-  DrawerContentScrollView,
-  DrawerItemList,
-  DrawerContentComponentProps,
+    createDrawerNavigator,
+    DrawerContentScrollView,
+    DrawerItemList,
+    DrawerContentComponentProps, DrawerNavigationOptions,
 } from '@react-navigation/drawer';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -35,10 +35,10 @@ import Notificacoes from './Notificacoes';
 
 const Drawer = createDrawerNavigator();
 
-const defaultScreenOptions = ({ navigation }: any) => ({
+const defaultScreenOptions = ({ navigation }: any): DrawerNavigationOptions => ({
     headerStyle: { backgroundColor: '#0F3C52' },
     headerTintColor: '#fff',
-    headerTitleAlign: 'center',
+    headerTitleAlign: 'center' as const,
     drawerActiveTintColor: '#0F3C52',
     headerLeft: () => (
         <TouchableOpacity onPress={() => navigation.goBack()}>

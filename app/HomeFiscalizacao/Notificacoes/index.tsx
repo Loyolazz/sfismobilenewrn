@@ -1,9 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import {View, Text, FlatList, TouchableOpacity} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import { listarMensagensPush, MensagemPush } from '@/src/api/notificacoes';
 import { loadSession } from '@/src/services/session';
+import {MaterialIcons} from "@expo/vector-icons";
+import {goBack} from "expo-router/build/global-state/routing";
 
 export default function Notificacoes() {
   const [dados, setDados] = useState<MensagemPush[]>([]);
@@ -36,7 +38,7 @@ export default function Notificacoes() {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity onPress={() => goBack()}>
           <MaterialIcons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notificações</Text>

@@ -12,6 +12,9 @@
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
+
+    "scheme": "sfismobile2",
+
     "ios": {
       "supportsTablet": true
     },
