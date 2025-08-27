@@ -4,23 +4,40 @@
     "slug": "SFISMobile2",
     "version": "1.2.11",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/ic_launcher.png",
     "userInterfaceStyle": "light",
     "newArchEnabled": true,
     "splash": {
-      "image": "./assets/splash-icon.png",
+      "image": "./assets/icon/logo@2x.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
-
+    "plugins": [
+      [
+        "expo-build-properties",
+        {
+          "android": {
+            "minSdkVersion": 23
+          }
+        }
+      ]
+    ],
     "scheme": "sfismobile2",
 
     "ios": {
+      "bundleIdentifier": "com.antaq.sfismobile2",
       "supportsTablet": true
     },
     "android": {
+      "package": "com.antaq.sfismobile2",
+      "permissions": [
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+
+      ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "backgroundImage": "./assets/background/fundo-release.png",
+        "foregroundImage": "./assets/ic_launcher.png",
         "backgroundColor": "#ffffff"
       },
       "edgeToEdgeEnabled": true

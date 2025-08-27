@@ -1,15 +1,15 @@
-import { soapRequest } from "./antaq";
+// src/services/getversion.ts
+import { soapRequest, extractSoapResult } from "./antaq";
 
+/** Chama o método GetVersion e retorna a string de versão */
 export async function getVersion(): Promise<string> {
   const parsed = await soapRequest("GetVersion");
+  const version = extractSoapResult(parsed, "GetVersion");
 
-  // Loga a resposta completa da API para depuração
-  console.log("Resposta completa de GetVersion:", parsed);
+  console.log("[GetVersion] result:", version);
 
-  const version = parsed.Envelope.Body.GetVersionResponse.GetVersionResult;
+  if (typeof version === "string") return version;
+  if (version != null) return String(version);
 
-  // Mostra a versão retornada pela API
-  console.log("Versão da API:", version);
-
-  return version;
+  throw new Error("GetVersionResult não encontrado na resposta SOAP.");
 }
