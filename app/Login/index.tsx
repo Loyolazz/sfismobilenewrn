@@ -24,6 +24,7 @@ import { usuarioAutenticar } from "@/src/api/usuarioAutenticar";
 import { saveSession, loadSession } from "@/src/services/session";
 import styles from './styles';
 import Icon from '@/src/components/Icon';
+import theme from '@/src/theme';
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -98,7 +99,7 @@ export default function LoginScreen() {
     return (
         <SafeAreaView style={styles.background}>
             <LinearGradient
-                colors={["#0B3B52", "#071F2B"]}
+                colors={[theme.colors.primary, theme.colors.primaryDark]}
                 style={StyleSheet.absoluteFillObject}
             />
 

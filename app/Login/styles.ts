@@ -1,7 +1,10 @@
 import { StyleSheet } from 'react-native';
+import theme from '@/src/theme';
+
+const { colors } = theme;
 
 export default StyleSheet.create({
-    background: { flex: 1, backgroundColor: "#071F2B" },
+    background: { flex: 1, backgroundColor: colors.primaryDark },
     flex1: { flex: 1 },
     center: { alignItems: "center", justifyContent: "center" },
 
@@ -16,7 +19,7 @@ export default StyleSheet.create({
     logo: { width: 176, height: 96, marginBottom: -4 },
 
     title: {
-        color: "#E6F1F5",
+        color: colors.textOnPrimary,
         fontSize: 22,
         fontWeight: "700",
         letterSpacing: 0.3,
@@ -47,7 +50,7 @@ export default StyleSheet.create({
 
     input: {
         flex: 1,
-        color: "#FFFFFF",
+        color: colors.surface,
     },
 
     row: {
@@ -80,7 +83,7 @@ export default StyleSheet.create({
         borderRadius: 12,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "#0EA5E9",
+        backgroundColor: colors.accent,
         marginTop: 6,
     },
 
