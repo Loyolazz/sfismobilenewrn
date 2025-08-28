@@ -1,16 +1,22 @@
 import React from 'react';
-import { Text, StyleSheet } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import styles from './styles';
+import { releases } from '@/src/utils/releases';
 
 export default function NovidadesVersao() {
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.title}>NovidadesVersao</Text>
+      <ScrollView contentContainerStyle={styles.scroll}>
+        {releases.map((rel) => (
+          <View key={rel.versao} style={styles.section}>
+            <Text style={styles.version}>{rel.versao}</Text>
+            {rel.novidades.map((n, i) => (
+              <Text key={i} style={styles.item}>• {n}</Text>
+            ))}
+          </View>
+        ))}
+      </ScrollView>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  title: { fontSize: 18, color: '#0F3C52' },
-});

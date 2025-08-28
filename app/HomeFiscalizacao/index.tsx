@@ -5,6 +5,7 @@ import {
     ScrollView,
     TouchableOpacity,
     Image,
+    Modal,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
@@ -16,11 +17,12 @@ import {
     DrawerNavigationProp,
 } from '@react-navigation/drawer';
 import Icon from '@/src/components/Icon';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { loadSession, clearSession } from '@/src/services/session';
 import { listarMensagensPush } from '@/src/api/notificacoes';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
 import styles from './styles';
+import { getUltimaVersao } from '@/src/utils/releases';
 
 import MinhasFiscalizacoes from './MinhasFiscalizacoes';
 import FiscalizacaoRotina from './FiscalizacaoRotina';
@@ -40,7 +42,7 @@ import Notificacoes from './Notificacoes';
  *  Tipos
  *  ----------------------------- */
 export type DrawerParamList = {
-    Home: undefined;
+    Home: { showReleases?: string } | undefined;
     MinhasFiscalizacoes: undefined;
     FiscalizacaoRotina: undefined;
     ConsultarAutorizadas: undefined;
@@ -137,6 +139,12 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
                     <UserAvatar user={user} />
                     <Text style={styles.userName}>{user?.NOUsuario ?? ''}</Text>
                     <Text style={styles.userInfo}>{user?.NOLoginUsuario ?? ''}</Text>
+                    {user?.NRMatricula ? (
+                        <Text style={styles.userExtra}>Matrícula: {user.NRMatricula}</Text>
+                    ) : null}
+                    {user?.EEFuncionario ? (
+                        <Text style={styles.userExtra}>{user.EEFuncionario}</Text>
+                    ) : null}
                 </View>
 
                 <DrawerItemList {...props} />
@@ -158,8 +166,10 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
 /** -----------------------------
  *  Home
  *  ----------------------------- */
-function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
+function HomeScreen({ navigation, route }: { navigation: HomeScreenNav; route: any }) {
     const [hasUnread, setHasUnread] = useState(false);
+    const [timeLeft, setTimeLeft] = useState('');
+    const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         (async () => {
@@ -174,6 +184,25 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
             }
         })();
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            const session = await loadSession();
+            if (!session) return;
+            const diff = session.expiresAt - Date.now();
+            if (diff <= 0) return;
+            const day = 24 * 60 * 60 * 1000;
+            const days = Math.floor(diff / day);
+            const hours = Math.floor((diff % day) / (60 * 60 * 1000));
+            setTimeLeft(`${days}d ${hours}h`);
+        })();
+    }, []);
+
+    useEffect(() => {
+        if (route?.params?.showReleases) {
+            setShowModal(true);
+        }
+    }, [route?.params?.showReleases]);
 
     const items = useMemo(
         () =>
@@ -195,6 +224,13 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
         [navigation]
     );
 
+    const closeModal = useCallback(() => {
+        setShowModal(false);
+        navigation.setParams({ showReleases: undefined });
+    }, [navigation]);
+
+    const ultima = getUltimaVersao();
+
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
@@ -215,6 +251,7 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
             </View>
 
             <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
+                <Text style={styles.sessionInfo}>Tempo restante de sessão: {timeLeft}</Text>
                 <Text style={styles.question}>O que deseja fazer hoje?</Text>
 
                 {items.map((item) => (
@@ -231,6 +268,20 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
+
+            <Modal visible={showModal} transparent animationType="slide">
+                <View style={styles.modalOverlay}>
+                    <View style={styles.modalContent}>
+                        <Text style={styles.modalTitle}>{ultima.versao}</Text>
+                        {ultima.novidades.map((n, i) => (
+                            <Text key={i} style={styles.modalItem}>• {n}</Text>
+                        ))}
+                        <TouchableOpacity onPress={closeModal} style={styles.modalButton} accessibilityRole="button" accessibilityLabel="Fechar">
+                            <Text style={styles.modalButtonText}>Fechar</Text>
+                        </TouchableOpacity>
+                    </View>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 }
@@ -239,6 +290,7 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
  *  Navigator
  *  ----------------------------- */
 export default function HomeFiscalizacao() {
+    const params = useLocalSearchParams();
     return (
         <Drawer.Navigator
             screenOptions={defaultScreenOptions}
@@ -247,6 +299,7 @@ export default function HomeFiscalizacao() {
             <Drawer.Screen
                 name="Home"
                 component={HomeScreen}
+                initialParams={{ showReleases: params.showReleases }}
                 options={{
                     headerShown: false,
                     swipeEnabled: true,
@@ -262,6 +315,7 @@ export default function HomeFiscalizacao() {
                     title: 'Minhas Fiscalizações',
                     drawerIcon: makeDrawerIcon('assignment'),
                     drawerLabel: 'Minhas Fiscalizações',
+                    drawerItemStyle: { display: 'none' },
                 }}
             />
             <Drawer.Screen
@@ -271,6 +325,7 @@ export default function HomeFiscalizacao() {
                     title: 'Fiscalizações de Rotina',
                     drawerIcon: makeDrawerIcon('sync'),
                     drawerLabel: 'Rotina',
+                    drawerItemStyle: { display: 'none' },
                 }}
             />
             <Drawer.Screen
@@ -280,6 +335,7 @@ export default function HomeFiscalizacao() {
                     title: 'Consultar Autorizadas',
                     drawerIcon: makeDrawerIcon('search'),
                     drawerLabel: 'Consultar Autorizadas',
+                    drawerItemStyle: { display: 'none' },
                 }}
             />
             <Drawer.Screen
