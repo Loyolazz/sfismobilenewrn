@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import { listarMensagensPush, MensagemPush } from '@/src/api/notificacoes';
 import { loadSession } from '@/src/services/session';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Icon from '@/src/components/Icon';
 import {goBack} from "expo-router/build/global-state/routing";
 
 export default function Notificacoes() {
@@ -39,7 +39,7 @@ export default function Notificacoes() {
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBack()}>
-          <MaterialIcons name="arrow-back" size={24} color="#fff" />
+          <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Notificações</Text>
         <View style={{ width: 24 }} />

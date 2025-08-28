@@ -16,7 +16,7 @@ import {
     DrawerNavigationOptions,
     DrawerNavigationProp,
 } from '@react-navigation/drawer';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Icon from '@/src/components/Icon';
 import { useRouter } from 'expo-router';
 import { loadSession, clearSession } from '@/src/services/session';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
@@ -64,9 +64,10 @@ const Drawer = createDrawerNavigator<DrawerParamList>();
  *  Helpers
  *  ----------------------------- */
 const makeDrawerIcon =
-    (name: React.ComponentProps<typeof MaterialIcons>['name']) =>
-        ({ color, size }: { color: string; size: number }) =>
-            <MaterialIcons name={name} color={color} size={size} />;
+    (name: React.ComponentProps<typeof Icon>['name']) =>
+        ({ color, size }: { color: string; size: number }) => (
+            <Icon name={name} color={color} size={size} />
+        );
 
 const defaultScreenOptions = ({
                                   navigation,
@@ -84,7 +85,7 @@ const defaultScreenOptions = ({
             accessibilityLabel="Voltar"
             style={{ paddingHorizontal: 8 }}
         >
-            <MaterialIcons name="arrow-back" size={24} color="#fff" />
+            <Icon name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
     ),
     swipeEnabled: false,
@@ -102,7 +103,7 @@ function UserAvatar({ user }: { user: Servidor | null }) {
             />
         );
     }
-    return <MaterialIcons name="person" size={48} color="#0F3C52" />;
+    return <Icon name="person" size={48} color="#0F3C52" />;
 }
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
@@ -146,7 +147,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
                     accessibilityRole="button"
                     accessibilityLabel="Sair da conta"
                 >
-                    <MaterialIcons name="logout" size={24} color="#0F3C52" />
+                    <Icon name="logout" size={24} color="#0F3C52" />
                     <Text style={styles.logoutText}>Sair</Text>
                 </TouchableOpacity>
             </DrawerContentScrollView>
@@ -183,13 +184,13 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
             <View style={styles.header}>
 
                 <TouchableOpacity onPress={openDrawer} accessibilityLabel="Abrir menu">
-                    <MaterialIcons name="menu" size={28} color="#fff" />
+                    <Icon name="menu" size={28} color="#fff" />
                 </TouchableOpacity>
 
                 <Text style={styles.headerTitle}>SFISMobile</Text>
 
                 <TouchableOpacity onPress={goToNotificacoes} accessibilityLabel="Notificações">
-                    <MaterialIcons name="notifications" size={24} color="#fff" />
+                    <Icon name="notifications" size={24} color="#fff" />
                 </TouchableOpacity>
             </View>
 
@@ -204,9 +205,9 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
                         accessibilityRole="button"
                         accessibilityLabel={item.title}
                     >
-                        <MaterialIcons name={item.icon as any} size={24} color="#0F3C52" />
+                        <Icon name={item.icon as any} size={24} color="#0F3C52" />
                         <Text style={styles.cardText}>{item.title}</Text>
-                        <MaterialIcons name="chevron-right" size={24} color="#0F3C52" />
+                        <Icon name="chevron-right" size={24} color="#0F3C52" />
                     </TouchableOpacity>
                 ))}
             </ScrollView>
