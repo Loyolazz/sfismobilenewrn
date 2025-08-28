@@ -16,7 +16,7 @@ import {
     DrawerNavigationOptions,
     DrawerNavigationProp,
 } from '@react-navigation/drawer';
-import { MaterialIcons } from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useRouter } from 'expo-router';
 import { loadSession, clearSession } from '@/src/services/session';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
