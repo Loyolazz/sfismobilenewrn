@@ -20,10 +20,10 @@
             "minSdkVersion": 23
           }
         }
-      ]
+      ],
+      "expo-font"
     ],
     "scheme": "sfismobile2",
-
     "ios": {
       "bundleIdentifier": "com.antaq.sfismobile2",
       "supportsTablet": true
@@ -33,7 +33,6 @@
       "permissions": [
         "android.permission.READ_EXTERNAL_STORAGE",
         "android.permission.WRITE_EXTERNAL_STORAGE"
-
       ],
       "adaptiveIcon": {
         "backgroundImage": "./assets/background/fundo-release.png",
