@@ -1,17 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
-  View,
-  Text,
-  ScrollView,
-  TouchableOpacity,
-  Image,
+    View,
+    Text,
+    ScrollView,
+    TouchableOpacity,
+    Image,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
     DrawerItemList,
-    DrawerContentComponentProps, DrawerNavigationOptions,
+    DrawerContentComponentProps,
+    DrawerNavigationOptions,
+    DrawerNavigationProp,
 } from '@react-navigation/drawer';
 import { MaterialIcons } from '@expo/vector-icons';
 import { useRouter } from 'expo-router';
@@ -32,64 +34,107 @@ import NovidadesVersao from './NovidadesVersao';
 import SituacaoServico from './SituacaoServico';
 import Notificacoes from './Notificacoes';
 
+export type DrawerParamList = {
+    Home: undefined;
+    MinhasFiscalizacoes: undefined;
+    FiscalizacaoRotina: undefined;
+    ConsultarAutorizadas: undefined;
+    RelatorioUsuario: undefined;
+    Antaq: undefined;
+    Tutorial: undefined;
+    NovidadesVersao: undefined;
+    SituacaoServico: undefined;
+    EmAndamento: undefined;
+    PainelEmpresas: undefined;
+    EsquemasOperacionais: undefined;
+    ServicosNaoAutorizados: undefined;
+    Notificacoes: undefined;
+};
 
-const Drawer = createDrawerNavigator();
+type HomeScreenNav = DrawerNavigationProp<DrawerParamList, 'Home'>;
 
-const defaultScreenOptions = ({ navigation }: any): DrawerNavigationOptions => ({
+const Drawer = createDrawerNavigator<DrawerParamList>();
+
+const makeDrawerIcon =
+    (name: React.ComponentProps<typeof MaterialIcons>['name']) =>
+        ({ color, size }: { color: string; size: number }) =>
+            <MaterialIcons name={name} color={color} size={size} />;
+
+const defaultScreenOptions = ({navigation} :
+                              { navigation: DrawerNavigationProp<DrawerParamList>; }):
+    DrawerNavigationOptions => ({
     headerStyle: { backgroundColor: '#0F3C52' },
     headerTintColor: '#fff',
-    headerTitleAlign: 'center' as const,
+    headerTitleAlign: 'center',
     drawerActiveTintColor: '#0F3C52',
     headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            accessibilityRole="button"
+            accessibilityLabel="Voltar"
+            style={{ paddingHorizontal: 8 }}
+        >
             <MaterialIcons name="arrow-back" size={24} color="#fff" />
         </TouchableOpacity>
     ),
     swipeEnabled: false,
 });
 
+
+function UserAvatar({ user }: { user: Servidor | null }) {
+    if (user?.Foto) {
+        return (
+            <Image
+                source={{ uri: `data:image/png;base64,${user.Foto}` }}
+                style={styles.userAvatar}
+            />
+        );
+    }
+    return <MaterialIcons name="person" size={48} color="#0F3C52" />;
+}
+
 function CustomDrawerContent(props: DrawerContentComponentProps) {
     const router = useRouter();
     const [user, setUser] = useState<Servidor | null>(null);
 
     useEffect(() => {
+        let mounted = true;
         (async () => {
             try {
                 const session = await loadSession();
-                setUser(session?.usuario ?? null);
+                if (mounted) setUser(session?.usuario ?? null);
             } catch {
-                setUser(null);
+                if (mounted) setUser(null);
             }
         })();
+        return () => {
+            mounted = false;
+        };
     }, []);
 
-    async function handleLogout() {
+    const handleLogout = useCallback(async () => {
         await clearSession();
         router.replace('/Login');
-    }
+    }, [router]);
 
     return (
         <SafeAreaView style={styles.drawerSafe}>
             <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
                 <View style={styles.userSection}>
-                    {user?.Foto ? (
-                        <Image
-                            source={{ uri: `data:image/png;base64,${user.Foto}` }}
-                            style={styles.userAvatar}
-                        />
-                    ) : (
-                        <MaterialIcons name="person" size={48} color="#0F3C52" />
-                    )}
-                    <Text style={styles.userName}>
-                        {user?.NOUsuario || ''}
-                    </Text>
-                    <Text style={styles.userInfo}>
-                        {user?.NOLoginUsuario || ''}
-                    </Text>
+                    <UserAvatar user={user} />
+                    <Text style={styles.userName}>{user?.NOUsuario ?? ''}</Text>
+                    <Text style={styles.userInfo}>{user?.NOLoginUsuario ?? ''}</Text>
                 </View>
+
                 <DrawerItemList {...props} />
-                <TouchableOpacity style={styles.logout} onPress={handleLogout}>
-                    <MaterialIcons name="logout" size={24} color="#0F3C52"/>
+
+                <TouchableOpacity
+                    style={styles.logout}
+                    onPress={handleLogout}
+                    accessibilityRole="button"
+                    accessibilityLabel="Sair da conta"
+                >
+                    <MaterialIcons name="logout" size={24} color="#0F3C52" />
                     <Text style={styles.logoutText}>Sair</Text>
                 </TouchableOpacity>
             </DrawerContentScrollView>
@@ -97,26 +142,38 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
     );
 }
 
-function HomeScreen({navigation}: any) {
-    const items = [
-        {key: 'MinhasFiscalizacoes', title: 'Minhas Fiscalizações', icon: 'assignment'},
-        {key: 'FiscalizacaoRotina', title: 'Fiscalizações de Rotina', icon: 'sync'},
-        {key: 'ConsultarAutorizadas', title: 'Consultar Autorizadas', icon: 'search'},
-        {key: 'EmAndamento', title: 'Em Andamento', icon: 'hourglass-empty'},
-        {key: 'PainelEmpresas', title: 'Painel de Empresas', icon: 'business'},
-        {key: 'EsquemasOperacionais', title: 'Esquemas Operacionais', icon: 'schema'},
-        {key: 'ServicosNaoAutorizados', title: 'Serviços Não Autorizados', icon: 'report'},
-    ];
+function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
+    const items = useMemo(
+        () =>
+            ([
+                { key: 'MinhasFiscalizacoes', title: 'Minhas Fiscalizações', icon: 'assignment' },
+                { key: 'FiscalizacaoRotina', title: 'Fiscalizações de Rotina', icon: 'sync' },
+                { key: 'ConsultarAutorizadas', title: 'Consultar Autorizadas', icon: 'search' },
+                { key: 'EmAndamento', title: 'Em Andamento', icon: 'hourglass-empty' },
+                { key: 'PainelEmpresas', title: 'Painel de Empresas', icon: 'business' },
+                { key: 'EsquemasOperacionais', title: 'Esquemas Operacionais', icon: 'schema' },
+                { key: 'ServicosNaoAutorizados', title: 'Serviços Não Autorizados', icon: 'report' },
+            ] as const),
+        []
+    );
+
+    const openDrawer = useCallback(() => navigation.openDrawer(), [navigation]);
+    const goToNotificacoes = useCallback(
+        () => navigation.navigate('Notificacoes'),
+        [navigation]
+    );
 
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
-                <TouchableOpacity onPress={() => navigation.openDrawer()}>
-                    <MaterialIcons name="menu" size={28} color="#fff"/>
+                <TouchableOpacity onPress={openDrawer} accessibilityLabel="Abrir menu">
+                    <MaterialIcons name="menu" size={28} color="#fff" />
                 </TouchableOpacity>
+
                 <Text style={styles.headerTitle}>SFISMobile</Text>
-                <TouchableOpacity onPress={() => navigation.navigate('Notificacoes')}>
-                    <MaterialIcons name="notifications" size={24} color="#fff"/>
+
+                <TouchableOpacity onPress={goToNotificacoes} accessibilityLabel="Notificações">
+                    <MaterialIcons name="notifications" size={24} color="#fff" />
                 </TouchableOpacity>
             </View>
 
@@ -124,10 +181,16 @@ function HomeScreen({navigation}: any) {
                 <Text style={styles.question}>O que deseja fazer hoje?</Text>
 
                 {items.map((item) => (
-                    <TouchableOpacity key={item.key} style={styles.card} onPress={() => navigation.navigate(item.key)}>
-                        <MaterialIcons name={item.icon as any} size={24} color="#0F3C52"/>
+                    <TouchableOpacity
+                        key={item.key}
+                        style={styles.card}
+                        onPress={() => navigation.navigate(item.key as keyof DrawerParamList)}
+                        accessibilityRole="button"
+                        accessibilityLabel={item.title}
+                    >
+                        <MaterialIcons name={item.icon as any} size={24} color="#0F3C52" />
                         <Text style={styles.cardText}>{item.title}</Text>
-                        <MaterialIcons name="chevron-right" size={24} color="#0F3C52"/>
+                        <MaterialIcons name="chevron-right" size={24} color="#0F3C52" />
                     </TouchableOpacity>
                 ))}
             </ScrollView>
@@ -136,7 +199,6 @@ function HomeScreen({navigation}: any) {
 }
 
 export default function HomeFiscalizacao() {
-    // ✅ Sem NavigationContainer aqui
     return (
         <Drawer.Navigator
             screenOptions={defaultScreenOptions}
@@ -148,20 +210,17 @@ export default function HomeFiscalizacao() {
                 options={{
                     headerShown: false,
                     swipeEnabled: true,
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="home" color={color} size={size}/>
-                    ),
+                    drawerIcon: makeDrawerIcon('home'),
                     drawerLabel: 'Início',
                 }}
             />
+
             <Drawer.Screen
                 name="MinhasFiscalizacoes"
                 component={MinhasFiscalizacoes}
                 options={{
                     title: 'Minhas Fiscalizações',
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="assignment" color={color} size={size} />
-                    ),
+                    drawerIcon: makeDrawerIcon('assignment'),
                     drawerLabel: 'Minhas Fiscalizações',
                 }}
             />
@@ -170,9 +229,7 @@ export default function HomeFiscalizacao() {
                 component={FiscalizacaoRotina}
                 options={{
                     title: 'Fiscalizações de Rotina',
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="sync" color={color} size={size} />
-                    ),
+                    drawerIcon: makeDrawerIcon('sync'),
                     drawerLabel: 'Rotina',
                 }}
             />
@@ -181,9 +238,7 @@ export default function HomeFiscalizacao() {
                 component={ConsultarAutorizadas}
                 options={{
                     title: 'Consultar Autorizadas',
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="search" color={color} size={size} />
-                    ),
+                    drawerIcon: makeDrawerIcon('search'),
                     drawerLabel: 'Consultar Autorizadas',
                 }}
             />
@@ -192,9 +247,7 @@ export default function HomeFiscalizacao() {
                 component={RelatorioUsuario}
                 options={{
                     title: 'Relatório do Usuário',
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="description" color={color} size={size} />
-                    ),
+                    drawerIcon: makeDrawerIcon('description'),
                     drawerLabel: 'Relatório do Usuário',
                 }}
             />
@@ -203,9 +256,7 @@ export default function HomeFiscalizacao() {
                 component={Antaq}
                 options={{
                     title: 'A ANTAQ',
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="info" color={color} size={size} />
-                    ),
+                    drawerIcon: makeDrawerIcon('info'),
                     drawerLabel: 'A ANTAQ',
                 }}
             />
@@ -214,9 +265,7 @@ export default function HomeFiscalizacao() {
                 component={Tutorial}
                 options={{
                     title: 'Tutorial',
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="menu-book" color={color} size={size} />
-                    ),
+                    drawerIcon: makeDrawerIcon('menu-book'),
                     drawerLabel: 'Tutorial',
                 }}
             />
@@ -225,9 +274,7 @@ export default function HomeFiscalizacao() {
                 component={NovidadesVersao}
                 options={{
                     title: 'Novidades da Versão',
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="new-releases" color={color} size={size} />
-                    ),
+                    drawerIcon: makeDrawerIcon('new-releases'),
                     drawerLabel: 'Novidades da Versão',
                 }}
             />
@@ -236,12 +283,12 @@ export default function HomeFiscalizacao() {
                 component={SituacaoServico}
                 options={{
                     title: 'Situação do Serviço',
-                    drawerIcon: ({color, size}) => (
-                        <MaterialIcons name="wifi" color={color} size={size} />
-                    ),
+                    drawerIcon: makeDrawerIcon('wifi'),
                     drawerLabel: 'Situação do Serviço',
                 }}
             />
+
+            {/* Rotas “ocultas” no Drawer */}
             <Drawer.Screen
                 name="EmAndamento"
                 component={EmAndamento}
@@ -270,4 +317,3 @@ export default function HomeFiscalizacao() {
         </Drawer.Navigator>
     );
 }
-
