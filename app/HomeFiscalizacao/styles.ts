@@ -55,7 +55,7 @@ export default StyleSheet.create({
     },
     drawerContent: {
         flex: 1,
-        paddingTop: 0,
+        paddingTop: 22,
         backgroundColor: '#fff',
     },
     userSection: {

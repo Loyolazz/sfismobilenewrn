@@ -1,3 +1,4 @@
+// ./app/HomeFiscalizacao/index.tsx
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import {
     View,
@@ -20,6 +21,7 @@ import { useRouter } from 'expo-router';
 import { loadSession, clearSession } from '@/src/services/session';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
 import styles from './styles';
+
 import MinhasFiscalizacoes from './MinhasFiscalizacoes';
 import FiscalizacaoRotina from './FiscalizacaoRotina';
 import ConsultarAutorizadas from './ConsultarAutorizadas';
@@ -34,6 +36,9 @@ import NovidadesVersao from './NovidadesVersao';
 import SituacaoServico from './SituacaoServico';
 import Notificacoes from './Notificacoes';
 
+/** -----------------------------
+ *  Tipos
+ *  ----------------------------- */
 export type DrawerParamList = {
     Home: undefined;
     MinhasFiscalizacoes: undefined;
@@ -55,14 +60,19 @@ type HomeScreenNav = DrawerNavigationProp<DrawerParamList, 'Home'>;
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
+/** -----------------------------
+ *  Helpers
+ *  ----------------------------- */
 const makeDrawerIcon =
     (name: React.ComponentProps<typeof MaterialIcons>['name']) =>
         ({ color, size }: { color: string; size: number }) =>
             <MaterialIcons name={name} color={color} size={size} />;
 
-const defaultScreenOptions = ({navigation} :
-                              { navigation: DrawerNavigationProp<DrawerParamList>; }):
-    DrawerNavigationOptions => ({
+const defaultScreenOptions = ({
+                                  navigation,
+                              }: {
+    navigation: DrawerNavigationProp<DrawerParamList>;
+}): DrawerNavigationOptions => ({
     headerStyle: { backgroundColor: '#0F3C52' },
     headerTintColor: '#fff',
     headerTitleAlign: 'center',
@@ -80,7 +90,9 @@ const defaultScreenOptions = ({navigation} :
     swipeEnabled: false,
 });
 
-
+/** -----------------------------
+ *  Drawer Content
+ *  ----------------------------- */
 function UserAvatar({ user }: { user: Servidor | null }) {
     if (user?.Foto) {
         return (
@@ -142,6 +154,9 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
     );
 }
 
+/** -----------------------------
+ *  Home
+ *  ----------------------------- */
 function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
     const items = useMemo(
         () =>
@@ -166,6 +181,7 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
     return (
         <SafeAreaView style={styles.safeArea}>
             <View style={styles.header}>
+
                 <TouchableOpacity onPress={openDrawer} accessibilityLabel="Abrir menu">
                     <MaterialIcons name="menu" size={28} color="#fff" />
                 </TouchableOpacity>
@@ -198,6 +214,9 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
     );
 }
 
+/** -----------------------------
+ *  Navigator
+ *  ----------------------------- */
 export default function HomeFiscalizacao() {
     return (
         <Drawer.Navigator
@@ -315,5 +334,6 @@ export default function HomeFiscalizacao() {
                 options={{ title: 'Notificações', drawerItemStyle: { display: 'none' } }}
             />
         </Drawer.Navigator>
+
     );
 }
