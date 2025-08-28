@@ -76,7 +76,7 @@ export default function LoginScreen() {
             // salva sessão com ou sem manter conectado
             await saveSession({ token, usuario: servidor }, keepConnected, 14);
 
-            router.replace("/HomeFiscalizacao"); // substitui a rota atual (pós-login)
+            router.replace({ pathname: "/HomeFiscalizacao", params: { showReleases: '1' } }); // substitui a rota atual (pós-login)
         } catch (e: any) {
             setErro(
                 e?.message?.toString?.() ??

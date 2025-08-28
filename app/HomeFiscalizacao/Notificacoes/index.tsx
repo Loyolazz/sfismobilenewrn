@@ -17,7 +17,16 @@ export default function Notificacoes() {
       if (!idPerfil) return;
       try {
         const res = await listarMensagensPush(idPerfil);
-        setDados(res);
+        const parseDate = (s: string) => {
+          const [date, time] = s.split(' ');
+          const [d, m, y] = date.split('/').map(Number);
+          const [hh, mm, ss] = time.split(':').map(Number);
+          return new Date(y, m - 1, d, hh, mm, ss).getTime();
+        };
+        const ordenadas = [...res].sort(
+          (a, b) => parseDate(b.DTEnvio) - parseDate(a.DTEnvio)
+        );
+        setDados(ordenadas);
       } catch (e) {
         console.error(e);
       }

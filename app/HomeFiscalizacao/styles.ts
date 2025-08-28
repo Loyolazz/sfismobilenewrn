@@ -59,15 +59,15 @@ export default StyleSheet.create({
         backgroundColor: '#fff',
     },
     userSection: {
-        paddingVertical: 20,
+        paddingVertical: 24,
         alignItems: 'center',
-        backgroundColor: '#fff',
+        backgroundColor: '#E8F1F5',
     },
     userAvatar: {
-        width: 56,
-        height: 56,
-        borderRadius: 28,
-        marginBottom: 8,
+        width: 72,
+        height: 72,
+        borderRadius: 36,
+        marginBottom: 12,
     },
     userName: {
         color: '#0F3C52',
@@ -75,6 +75,11 @@ export default StyleSheet.create({
         textAlign: 'center',
     },
     userInfo: {
+        color: '#0F3C52',
+        fontSize: 12,
+        textAlign: 'center',
+    },
+    userExtra: {
         color: '#0F3C52',
         fontSize: 12,
         textAlign: 'center',
@@ -89,6 +94,46 @@ export default StyleSheet.create({
     logoutText: {
         color: '#0F3C52',
         marginLeft: 8,
+        fontWeight: 'bold',
+    },
+    sessionInfo: {
+        textAlign: 'center',
+        color: '#0F3C52',
+        marginTop: 16,
+    },
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.5)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: 20,
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 8,
+        padding: 20,
+        width: '100%',
+    },
+    modalTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#0F3C52',
+        marginBottom: 8,
+    },
+    modalItem: {
+        color: '#0F3C52',
+        marginBottom: 4,
+    },
+    modalButton: {
+        marginTop: 16,
+        alignSelf: 'flex-end',
+        backgroundColor: '#0F3C52',
+        paddingHorizontal: 16,
+        paddingVertical: 8,
+        borderRadius: 4,
+    },
+    modalButtonText: {
+        color: '#fff',
         fontWeight: 'bold',
     },
 });
