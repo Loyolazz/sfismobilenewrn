@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import { listarMensagensPush, MensagemPush } from '@/src/api/notificacoes';
 import { loadSession } from '@/src/services/session';
-import {MaterialIcons} from "@expo/vector-icons";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {goBack} from "expo-router/build/global-state/routing";
 
 export default function Notificacoes() {

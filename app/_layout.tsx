@@ -1,9 +1,14 @@
-import { Stack } from "expo-router";
-import { StatusBar } from "expo-status-bar";
-import { Platform } from "react-native";
-import { SafeAreaProvider } from "react-native-safe-area-context";
+import { useEffect } from 'react';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+import { Platform } from 'react-native';
+import { SafeAreaProvider } from 'react-native-safe-area-context';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 export default function RootLayout() {
+    useEffect(() => {
+        MaterialIcons.loadFont().catch(() => {});
+    }, []);
     return (
         <SafeAreaProvider>
             <StatusBar style="light" />
