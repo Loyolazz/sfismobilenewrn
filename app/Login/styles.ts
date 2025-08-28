@@ -34,14 +34,20 @@ export default StyleSheet.create({
         gap: 12,
     },
 
-    input: {
+    inputGroup: {
         height: 50,
         borderRadius: 12,
         paddingHorizontal: 12,
-        color: "#FFFFFF",
         backgroundColor: "rgba(255,255,255,0.10)",
         borderWidth: 1,
         borderColor: "rgba(255,255,255,0.22)",
+        flexDirection: "row",
+        alignItems: "center",
+    },
+
+    input: {
+        flex: 1,
+        color: "#FFFFFF",
     },
 
     row: {

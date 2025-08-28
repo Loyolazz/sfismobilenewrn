@@ -23,12 +23,14 @@ import { usuarioAutenticar } from "@/src/api/usuarioAutenticar";
 // Sessão segura (14 dias) – use o seu session.ts
 import { saveSession, loadSession } from "@/src/services/session";
 import styles from './styles';
+import Icon from '@/src/components/Icon';
 
 export default function LoginScreen() {
     const router = useRouter();
 
     const [usuario, setUsuario] = useState("");
     const [senha, setSenha] = useState("");
+    const [showPassword, setShowPassword] = useState(false);
     const [keepConnected, setKeepConnected] = useState(false);
     const [checking, setChecking] = useState(true);
     const [loading, setLoading] = useState(false);
@@ -115,27 +117,46 @@ export default function LoginScreen() {
                     <Text style={styles.title}>Entrar</Text>
 
                     <View style={styles.form}>
-                        <TextInput
-                            placeholder="Usuário / Matrícula"
-                            placeholderTextColor="#9FB3C1"
-                            value={usuario}
-                            onChangeText={setUsuario}
-                            style={styles.input}
-                            autoCapitalize="none"
-                            autoCorrect={false}
-                            returnKeyType="next"
-                        />
+                        <View style={styles.inputGroup}>
+                            <View style={{ marginRight: 8 }}>
+                                <Icon name="person" size={24} color="#9FB3C1" />
+                            </View>
+                            <TextInput
+                                placeholder="Usuário / Matrícula"
+                                placeholderTextColor="#9FB3C1"
+                                value={usuario}
+                                onChangeText={setUsuario}
+                                style={styles.input}
+                                autoCapitalize="none"
+                                autoCorrect={false}
+                                returnKeyType="next"
+                            />
+                        </View>
 
-                        <TextInput
-                            placeholder="Senha"
-                            placeholderTextColor="#9FB3C1"
-                            value={senha}
-                            onChangeText={setSenha}
-                            style={styles.input}
-                            secureTextEntry
-                            returnKeyType="go"
-                            onSubmitEditing={onEntrar}
-                        />
+                        <View style={styles.inputGroup}>
+                            <TextInput
+                                placeholder="Senha"
+                                placeholderTextColor="#9FB3C1"
+                                value={senha}
+                                onChangeText={setSenha}
+                                style={styles.input}
+                                secureTextEntry={!showPassword}
+                                returnKeyType="go"
+                                onSubmitEditing={onEntrar}
+                            />
+                            <Pressable
+                                onPress={() => setShowPassword(!showPassword)}
+                                accessibilityRole="button"
+                                accessibilityLabel={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                                style={{ marginLeft: 8 }}
+                            >
+                                <Icon
+                                    name={showPassword ? 'visibility-off' : 'visibility'}
+                                    size={24}
+                                    color="#9FB3C1"
+                                />
+                            </Pressable>
+                        </View>
 
                         <View style={styles.row}>
                             <Text style={styles.keepText}>MANTER CONECTADO (14 dias)</Text>
