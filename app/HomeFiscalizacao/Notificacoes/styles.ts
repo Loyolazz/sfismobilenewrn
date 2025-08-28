@@ -23,8 +23,13 @@ export default StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowRadius: 4,
     elevation: 2,
+    flexDirection: 'row',
+    alignItems: 'flex-start',
   },
+  icon: { marginRight: 12, marginTop: 2 },
+  cardContent: { flex: 1 },
   title: { fontSize: 16, fontWeight: 'bold', marginBottom: 8, color: '#0F3C52' },
+  readTitle: { fontWeight: 'normal' },
   message: { fontSize: 14, marginBottom: 8, color: '#333' },
   date: { fontSize: 12, color: '#666', textAlign: 'right' },
 });

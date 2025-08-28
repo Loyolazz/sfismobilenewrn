@@ -18,6 +18,7 @@ import {
 import Icon from '@/src/components/Icon';
 import { useRouter } from 'expo-router';
 import { loadSession, clearSession } from '@/src/services/session';
+import { listarMensagensPush } from '@/src/api/notificacoes';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
 import styles from './styles';
 
@@ -158,6 +159,22 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
  *  Home
  *  ----------------------------- */
 function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
+    const [hasUnread, setHasUnread] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                const session = await loadSession();
+                const idPerfil = session?.usuario?.IDPerfilFiscalizacao;
+                if (!idPerfil) return;
+                const msgs = await listarMensagensPush(idPerfil);
+                setHasUnread(msgs.some((m) => m.STAtivo === '1'));
+            } catch {
+                setHasUnread(false);
+            }
+        })();
+    }, []);
+
     const items = useMemo(
         () =>
             ([
@@ -189,7 +206,11 @@ function HomeScreen({ navigation }: { navigation: HomeScreenNav }) {
                 <Text style={styles.headerTitle}>SFISMobile</Text>
 
                 <TouchableOpacity onPress={goToNotificacoes} accessibilityLabel="Notificações">
-                    <Icon name="notifications" size={24} color="#fff" />
+                    <Icon
+                        name={hasUnread ? 'notifications-unread' : 'notifications'}
+                        size={24}
+                        color="#fff"
+                    />
                 </TouchableOpacity>
             </View>
 

@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {View, Text, FlatList, TouchableOpacity} from 'react-native';
+import { View, Text, FlatList, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import styles from './styles';
 import { listarMensagensPush, MensagemPush } from '@/src/api/notificacoes';
 import { loadSession } from '@/src/services/session';
 import Icon from '@/src/components/Icon';
-import {goBack} from "expo-router/build/global-state/routing";
+import { goBack } from 'expo-router/build/global-state/routing';
 
 export default function Notificacoes() {
   const [dados, setDados] = useState<MensagemPush[]>([]);
@@ -26,11 +26,23 @@ export default function Notificacoes() {
   }, []);
 
   function renderItem({ item }: { item: MensagemPush }) {
+    const unread = item.STAtivo === '1';
     return (
       <View style={styles.card}>
-        <Text style={styles.title}>{item.DSTituloMensagemPush}</Text>
-        <Text style={styles.message}>{item.DSMensagemPush}</Text>
-        <Text style={styles.date}>{item.DTEnvio}</Text>
+        <View style={styles.icon}>
+          <Icon
+            name={unread ? 'notifications-unread' : 'notifications'}
+            size={24}
+            color="#0F3C52"
+          />
+        </View>
+        <View style={styles.cardContent}>
+          <Text style={[styles.title, !unread && styles.readTitle]}>
+            {item.DSTituloMensagemPush}
+          </Text>
+          <Text style={styles.message}>{item.DSMensagemPush}</Text>
+          <Text style={styles.date}>{item.DTEnvio}</Text>
+        </View>
       </View>
     );
   }
