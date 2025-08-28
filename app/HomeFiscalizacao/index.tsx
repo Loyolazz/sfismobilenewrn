@@ -42,7 +42,7 @@ import Notificacoes from './Notificacoes';
  *  Tipos
  *  ----------------------------- */
 export type DrawerParamList = {
-    Home: { showReleases?: string } | undefined;
+    Home: { showReleases?: string | string[] } | undefined;
     MinhasFiscalizacoes: undefined;
     FiscalizacaoRotina: undefined;
     ConsultarAutorizadas: undefined;

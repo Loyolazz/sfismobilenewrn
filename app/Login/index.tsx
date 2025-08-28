@@ -71,7 +71,7 @@ export default function LoginScreen() {
 
             // Confirma no console que o login ocorreu com sucesso
             console.log("Token recebido:", token);
-            console.log("Informações do usuário:", servidor);
+            //console.log("Informações do usuário:", servidor);
 
             // salva sessão com ou sem manter conectado
             await saveSession({ token, usuario: servidor }, keepConnected, 14);
