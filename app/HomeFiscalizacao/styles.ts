@@ -1,143 +1,165 @@
 import { StyleSheet } from 'react-native';
 import theme from '@/src/theme';
 
-const { colors } = theme;
+export const CARD_GRADIENT = ['#0B3556', '#153D5D'];
 
-export default StyleSheet.create({
+const styles = StyleSheet.create({
+    /* ------ áreas gerais ------ */
     safeArea: {
         flex: 1,
-        backgroundColor: colors.primaryDark,
+        backgroundColor: theme.colors.background ?? '#F2F4F7',
     },
-    drawerSafe: {
-        flex: 1,
-        backgroundColor: colors.surface,
-    },
-    scroll: {
-        flex: 1,
-        backgroundColor: colors.surface,
-    },
+    scroll: { flex: 1 },
     container: {
-        flexGrow: 1,
-        paddingBottom: 20,
-    },
-    header: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        backgroundColor: colors.primaryDark,
         paddingHorizontal: 16,
-        paddingVertical: 12,
+        paddingBottom: 24,
+    },
+
+    /* ------ header (escuro, título central) ------ */
+    header: {
+        height: 56,
+        backgroundColor: theme.colors.primaryDark,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        paddingHorizontal: 16,
     },
     headerTitle: {
-        color: colors.surface,
-        fontSize: 18,
-        fontWeight: 'bold',
-    },
-    question: {
-        textAlign: 'center',
+        color: theme.colors.surface,
         fontSize: 18,
         fontWeight: '600',
-        marginVertical: 20,
-        color: colors.primaryDark,
     },
-    card: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: colors.surfaceAlt,
-        borderRadius: 8,
-        marginHorizontal: 16,
-        marginBottom: 12,
-        padding: 16,
+
+    /* ------ greeting ------ */
+    greetingBox: {
+        backgroundColor: '#0B3556',
+        borderBottomLeftRadius: 12,
+        borderBottomRightRadius: 12,
+        paddingHorizontal: 16,
+        paddingTop: 16,
+        paddingBottom: 20,
+        marginBottom: 16,
     },
-    cardText: {
-        flex: 1,
-        marginLeft: 10,
-        color: colors.primaryDark,
-        fontSize: 16,
+    greetingText: {
+        color: '#E8F1F8',
+        fontSize: 20,
         fontWeight: '500',
     },
-    drawerContent: {
-        flex: 1,
-        paddingTop: 22,
-        backgroundColor: colors.surface,
+    greetingStrong: {
+        color: '#FFFFFF',
+        fontWeight: '800',
     },
-    userSection: {
-        paddingVertical: 24,
+    greetingSub: {
+        color: '#C8D7E4',
+        marginTop: 6,
+        fontSize: 14,
+    },
+
+    /* ------ grid 2×1 de cards ------ */
+    grid: {
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between',
+    },
+    tileWrapper: {
+        width: '48%',
+        marginBottom: 16,
+    },
+    tile: {
+        height: 180,
+        borderRadius: 18,
+        padding: 16,
+        justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: colors.surfaceAlt,
+        // sombra leve
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 6,
+        elevation: 3,
     },
-    userAvatar: {
-        width: 72,
-        height: 72,
-        borderRadius: 36,
+    tileIconWrap: {
+        width: 56,
+        height: 56,
+        borderRadius: 28,
+        backgroundColor: 'rgba(255,255,255,0.14)',
+        alignItems: 'center',
+        justifyContent: 'center',
         marginBottom: 12,
     },
-    userName: {
-        color: colors.primaryDark,
-        fontWeight: 'bold',
+    tileText: {
+        color: '#FFFFFF',
+        fontSize: 18,
+        lineHeight: 22,
+        fontWeight: '600',
         textAlign: 'center',
     },
-    userInfo: {
-        color: colors.primaryDark,
-        fontSize: 12,
+
+    /* ------ rodapé versão ------ */
+    versionText: {
         textAlign: 'center',
+        color: '#A0A8B2',
+        marginTop: 8,
     },
-    userExtra: {
-        color: colors.primaryDark,
-        fontSize: 12,
-        textAlign: 'center',
+
+    /* ------ drawer ------ */
+    drawerSafe: { flex: 1 },
+    drawerContent: { paddingBottom: 24 },
+    userSection: {
+        alignItems: 'center',
+        paddingVertical: 16,
+        borderBottomWidth: StyleSheet.hairlineWidth,
+        borderBottomColor: '#E6E9EE',
+        marginBottom: 8,
     },
+    userAvatar: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        marginBottom: 8,
+    },
+    userName: { fontWeight: '700', fontSize: 16, color: '#0B1F33' },
+    userInfo: { color: '#4B5B70', marginTop: 2 },
+    userExtra: { color: '#64748B', fontSize: 12, marginTop: 2 },
+
     logout: {
         flexDirection: 'row',
         alignItems: 'center',
-        padding: 16,
-        borderTopWidth: 1,
-        borderColor: '#eee',
+        gap: 8,
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        marginTop: 8,
     },
     logoutText: {
-        color: colors.primaryDark,
-        marginLeft: 8,
-        fontWeight: 'bold',
+        color: theme.colors.primaryDark,
+        fontWeight: '600',
     },
-    sessionInfo: {
-        textAlign: 'center',
-        color: colors.primaryDark,
-        marginTop: 16,
-    },
+
+    /* ------ modal novidades ------ */
     modalOverlay: {
         flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.5)',
+        backgroundColor: 'rgba(0,0,0,0.35)',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
+        padding: 24,
     },
     modalContent: {
-        backgroundColor: colors.surface,
-        borderRadius: 8,
-        padding: 20,
+        backgroundColor: '#fff',
+        borderRadius: 14,
         width: '100%',
+        padding: 16,
     },
-    modalTitle: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        color: colors.primaryDark,
-        marginBottom: 8,
-    },
-    modalItem: {
-        color: colors.primaryDark,
-        marginBottom: 4,
-    },
+    modalTitle: { fontSize: 16, fontWeight: '700', marginBottom: 8 },
+    modalItem: { fontSize: 14, marginBottom: 4, color: '#2C3E50' },
     modalButton: {
-        marginTop: 16,
+        marginTop: 12,
         alignSelf: 'flex-end',
-        backgroundColor: colors.primaryDark,
         paddingHorizontal: 16,
-        paddingVertical: 8,
-        borderRadius: 4,
+        paddingVertical: 10,
+        backgroundColor: theme.colors.primaryDark,
+        borderRadius: 10,
     },
-    modalButtonText: {
-        color: colors.surface,
-        fontWeight: 'bold',
-    },
+    modalButtonText: { color: '#fff', fontWeight: '600' },
 });
 
+export default styles;

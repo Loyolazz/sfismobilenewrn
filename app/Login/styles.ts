@@ -1,97 +1,86 @@
-import { StyleSheet } from 'react-native';
-import theme from '@/src/theme';
-
-const { colors } = theme;
+import { StyleSheet } from "react-native";
+import theme from "@/src/theme";
 
 export default StyleSheet.create({
-    background: { flex: 1, backgroundColor: colors.primaryDark },
-    flex1: { flex: 1 },
-    center: { alignItems: "center", justifyContent: "center" },
-
+    background: {
+        flex: 1,
+        backgroundColor: theme.colors.surface,
+    },
+    flex1: {
+        flex: 1,
+    },
+    center: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
     container: {
         flex: 1,
-        paddingHorizontal: 24,
-        alignItems: "center",
         justifyContent: "center",
-        gap: 24,
+        paddingHorizontal: 24,
     },
-
-    logo: { width: 176, height: 96, marginBottom: -4 },
-
     title: {
-        color: colors.textOnPrimary,
-        fontSize: 22,
-        fontWeight: "700",
-        letterSpacing: 0.3,
-        marginBottom: -4,
+        fontSize: 28,
+        fontWeight: "bold",
+        color: theme.colors.surface,
+        textAlign: "center",
+        marginBottom: 24,
     },
-
     form: {
-        width: "100%",
-        maxWidth: 420,
-        borderRadius: 14,
-        padding: 20,
-        backgroundColor: "rgba(255,255,255,0.06)",
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.16)",
-        gap: 12,
+        marginTop: 16,
     },
-
     inputGroup: {
-        height: 50,
+        flexDirection: "row",
+        alignItems: "center",
+        backgroundColor: theme.colors.surface,
         borderRadius: 12,
         paddingHorizontal: 12,
-        backgroundColor: "rgba(255,255,255,0.10)",
-        borderWidth: 1,
-        borderColor: "rgba(255,255,255,0.22)",
-        flexDirection: "row",
-        alignItems: "center",
+        marginBottom: 16,
+        height: 50,
     },
-
     input: {
         flex: 1,
-        color: colors.surface,
+        fontSize: 16,
+        color: theme.colors.text,
     },
-
     row: {
-        marginTop: 4,
-        marginBottom: 2,
         flexDirection: "row",
-        alignItems: "center",
         justifyContent: "space-between",
+        alignItems: "center",
+        marginVertical: 12,
     },
-
     keepText: {
-        color: "rgba(230,241,245,0.9)",
         fontSize: 12,
-        letterSpacing: 0.3,
+        color: theme.colors.text,
     },
-
     error: {
-        color: "#FCA5A5",
-        backgroundColor: "rgba(239,68,68,0.08)",
-        borderColor: "rgba(239,68,68,0.32)",
-        borderWidth: 1,
-        paddingHorizontal: 10,
-        paddingVertical: 8,
-        borderRadius: 10,
-        fontSize: 12.5,
+        color: theme.colors.error,
+        textAlign: "center",
+        marginBottom: 12,
     },
-
     button: {
-        height: 50,
+        backgroundColor: theme.colors.primary,
         borderRadius: 12,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: colors.accent,
-        marginTop: 6,
+        height: 50,
+        marginTop: 16,
     },
-
-    buttonPressed: { opacity: 0.9 },
-    buttonDisabled: { opacity: 0.6 },
-
-    buttonText: { color: "#fff", fontSize: 16, fontWeight: "700" },
-
-    version: { color: "rgba(230,241,245,0.8)", marginTop: 8 },
+    buttonDisabled: {
+        opacity: 0.5,
+    },
+    buttonPressed: {
+        opacity: 0.8,
+    },
+    buttonText: {
+        color: "#fff",
+        fontSize: 16,
+        fontWeight: "bold",
+    },
+    version: {
+        marginTop: 32,
+        fontSize: 12,
+        textAlign: "center",
+        color: "#ccc",
+    },
 });
-

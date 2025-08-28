@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState, useCallback } from 'react';
 import {
     View,
     Text,
@@ -12,16 +12,16 @@ import {
     createDrawerNavigator,
     DrawerContentScrollView,
     DrawerItemList,
-    DrawerContentComponentProps,
     DrawerNavigationOptions,
     DrawerNavigationProp,
 } from '@react-navigation/drawer';
+import { LinearGradient } from 'expo-linear-gradient';
+
 import Icon from '@/src/components/Icon';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { loadSession, clearSession } from '@/src/services/session';
-import { listarMensagensPush } from '@/src/api/notificacoes';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
-import styles from './styles';
+import styles, { CARD_GRADIENT } from './styles';
 import { getUltimaVersao } from '@/src/utils/releases';
 import theme from '@/src/theme';
 
@@ -39,9 +39,6 @@ import NovidadesVersao from './NovidadesVersao';
 import SituacaoServico from './SituacaoServico';
 import Notificacoes from './Notificacoes';
 
-/** -----------------------------
- *  Tipos
- *  ----------------------------- */
 export type DrawerParamList = {
     Home: { showReleases?: string | string[] } | undefined;
     MinhasFiscalizacoes: undefined;
@@ -60,17 +57,13 @@ export type DrawerParamList = {
 };
 
 type HomeScreenNav = DrawerNavigationProp<DrawerParamList, 'Home'>;
-
 const Drawer = createDrawerNavigator<DrawerParamList>();
 
-/** -----------------------------
- *  Helpers
- *  ----------------------------- */
+/* -------------------------------- Helpers -------------------------------- */
 const makeDrawerIcon =
     (name: React.ComponentProps<typeof Icon>['name']) =>
-        ({ color, size }: { color: string; size: number }) => (
-            <Icon name={name} color={color} size={size} />
-        );
+        ({ color, size }: { color: string; size: number }) =>
+            <Icon name={name} color={color} size={size} />;
 
 const defaultScreenOptions = ({
                                   navigation,
@@ -94,9 +87,7 @@ const defaultScreenOptions = ({
     swipeEnabled: false,
 });
 
-/** -----------------------------
- *  Drawer Content
- *  ----------------------------- */
+/* --------------------------- Drawer custom content ------------------------ */
 function UserAvatar({ user }: { user: Servidor | null }) {
     if (user?.Foto) {
         return (
@@ -109,7 +100,7 @@ function UserAvatar({ user }: { user: Servidor | null }) {
     return <Icon name="person" size={48} color={theme.colors.primaryDark} />;
 }
 
-function CustomDrawerContent(props: DrawerContentComponentProps) {
+function CustomDrawerContent(props: any) {
     const router = useRouter();
     const [user, setUser] = useState<Servidor | null>(null);
 
@@ -164,45 +155,21 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
     );
 }
 
-/** -----------------------------
- *  Home
- *  ----------------------------- */
+/* ---------------------------------- Home --------------------------------- */
 function HomeScreen({ navigation, route }: { navigation: HomeScreenNav; route: any }) {
-    const [hasUnread, setHasUnread] = useState(false);
-    const [timeLeft, setTimeLeft] = useState('');
+    const [userName, setUserName] = useState<string>('');
     const [showModal, setShowModal] = useState(false);
 
     useEffect(() => {
         (async () => {
-            try {
-                const session = await loadSession();
-                const idPerfil = session?.usuario?.IDPerfilFiscalizacao;
-                if (!idPerfil) return;
-                const msgs = await listarMensagensPush(idPerfil);
-                setHasUnread(msgs.some((m) => m.STAtivo === '1'));
-            } catch {
-                setHasUnread(false);
-            }
+            const s = await loadSession();
+            const first = s?.usuario?.NOUsuario?.split(' ')?.[0] ?? '';
+            setUserName(first.toUpperCase());
         })();
     }, []);
 
     useEffect(() => {
-        (async () => {
-            const session = await loadSession();
-            if (!session) return;
-            const diff = session.expiresAt - Date.now();
-            if (diff <= 0) return;
-            const day = 24 * 60 * 60 * 1000;
-            const days = Math.floor(diff / day);
-            const hours = Math.floor((diff % day) / (60 * 60 * 1000));
-            setTimeLeft(`${days}d ${hours}h`);
-        })();
-    }, []);
-
-    useEffect(() => {
-        if (route?.params?.showReleases) {
-            setShowModal(true);
-        }
+        if (route?.params?.showReleases) setShowModal(true);
     }, [route?.params?.showReleases]);
 
     const items = useMemo(
@@ -220,64 +187,79 @@ function HomeScreen({ navigation, route }: { navigation: HomeScreenNav; route: a
     );
 
     const openDrawer = useCallback(() => navigation.openDrawer(), [navigation]);
-    const goToNotificacoes = useCallback(
-        () => navigation.navigate('Notificacoes'),
-        [navigation]
-    );
-
     const closeModal = useCallback(() => {
         setShowModal(false);
         navigation.setParams({ showReleases: undefined });
     }, [navigation]);
 
+    // corrige duplicação "Versão WS: Versão 1.2.11"
     const ultima = getUltimaVersao();
+    const versaoStr = String(ultima?.versao ?? '—').replace(/^vers[aã]o\s*/i, '');
 
+    // @ts-ignore
     return (
         <SafeAreaView style={styles.safeArea}>
+            {/* Header próprio como na IMAGEM 1 */}
             <View style={styles.header}>
-
                 <TouchableOpacity onPress={openDrawer} accessibilityLabel="Abrir menu">
                     <Icon name="menu" size={28} color={theme.colors.surface} />
                 </TouchableOpacity>
 
-                <Text style={styles.headerTitle}>SFISMobile</Text>
+                <Text style={styles.headerTitle}>Início</Text>
 
-                <TouchableOpacity onPress={goToNotificacoes} accessibilityLabel="Notificações">
-                    <Icon
-                        name={hasUnread ? 'notifications-unread' : 'notifications'}
-                        size={24}
-                        color={theme.colors.surface}
-                    />
-                </TouchableOpacity>
+                {/* Espaço para manter o título central */}
+                <View style={{ width: 28 }} />
             </View>
 
             <ScrollView style={styles.scroll} contentContainerStyle={styles.container}>
-                <Text style={styles.sessionInfo}>Tempo restante de sessão: {timeLeft}</Text>
-                <Text style={styles.question}>O que deseja fazer hoje?</Text>
+                <View style={styles.greetingBox}>
+                    <Text style={styles.greetingText}>
+                        Olá, <Text style={styles.greetingStrong}>{userName || 'FISCAL'}</Text>!
+                    </Text>
+                    <Text style={styles.greetingSub}>O que deseja fazer hoje?</Text>
+                </View>
 
-                {items.map((item) => (
-                    <TouchableOpacity
-                        key={item.key}
-                        style={styles.card}
-                        onPress={() => navigation.navigate(item.key as keyof DrawerParamList)}
-                        accessibilityRole="button"
-                        accessibilityLabel={item.title}
-                    >
-                        <Icon name={item.icon as any} size={24} color={theme.colors.primaryDark} />
-                        <Text style={styles.cardText}>{item.title}</Text>
-                        <Icon name="chevron-right" size={24} color={theme.colors.primaryDark} />
-                    </TouchableOpacity>
-                ))}
+                <View style={styles.grid}>
+                    {items.map((item) => (
+                        <TouchableOpacity
+                            key={item.key}
+                            style={styles.tileWrapper}
+                            onPress={() => navigation.navigate(item.key as any)}
+                            accessibilityRole="button"
+                            accessibilityLabel={item.title}
+                        >
+                            <LinearGradient
+                                colors={CARD_GRADIENT}
+                                start={{ x: 0, y: 0 }}
+                                end={{ x: 0, y: 1 }}
+                                style={styles.tile}
+                            >
+                                <View style={styles.tileIconWrap}>
+                                    <Icon name={item.icon as any} size={28} color="#fff" />
+                                </View>
+                                <Text style={styles.tileText}>{item.title}</Text>
+                            </LinearGradient>
+                        </TouchableOpacity>
+                    ))}
+                </View>
+
+                <Text style={styles.versionText}>Versão WS: {versaoStr}</Text>
             </ScrollView>
 
+            {/* Modal de novidades (mantido) */}
             <Modal visible={showModal} transparent animationType="slide">
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
-                        <Text style={styles.modalTitle}>{ultima.versao}</Text>
-                        {ultima.novidades.map((n, i) => (
+                        <Text style={styles.modalTitle}>{ultima?.versao}</Text>
+                        {ultima?.novidades?.map((n: string, i: number) => (
                             <Text key={i} style={styles.modalItem}>• {n}</Text>
                         ))}
-                        <TouchableOpacity onPress={closeModal} style={styles.modalButton} accessibilityRole="button" accessibilityLabel="Fechar">
+                        <TouchableOpacity
+                            onPress={closeModal}
+                            style={styles.modalButton}
+                            accessibilityRole="button"
+                            accessibilityLabel="Fechar"
+                        >
                             <Text style={styles.modalButtonText}>Fechar</Text>
                         </TouchableOpacity>
                     </View>
@@ -287,9 +269,7 @@ function HomeScreen({ navigation, route }: { navigation: HomeScreenNav; route: a
     );
 }
 
-/** -----------------------------
- *  Navigator
- *  ----------------------------- */
+/* ------------------------------ Navigator ------------------------------- */
 export default function HomeFiscalizacao() {
     const params = useLocalSearchParams();
     return (
@@ -325,7 +305,6 @@ export default function HomeFiscalizacao() {
                 options={{
                     title: 'Fiscalizações de Rotina',
                     drawerIcon: makeDrawerIcon('sync'),
-                    drawerLabel: 'Rotina',
                     drawerItemStyle: { display: 'none' },
                 }}
             />
@@ -335,83 +314,43 @@ export default function HomeFiscalizacao() {
                 options={{
                     title: 'Consultar Autorizadas',
                     drawerIcon: makeDrawerIcon('search'),
-                    drawerLabel: 'Consultar Autorizadas',
                     drawerItemStyle: { display: 'none' },
                 }}
             />
+
+            {/* Conteúdo do Drawer (mantido) */}
             <Drawer.Screen
                 name="RelatorioUsuario"
                 component={RelatorioUsuario}
-                options={{
-                    title: 'Relatório do Usuário',
-                    drawerIcon: makeDrawerIcon('description'),
-                    drawerLabel: 'Relatório do Usuário',
-                }}
+                options={{ title: 'Relatório do Usuário', drawerIcon: makeDrawerIcon('description') }}
             />
             <Drawer.Screen
                 name="Antaq"
                 component={Antaq}
-                options={{
-                    title: 'A ANTAQ',
-                    drawerIcon: makeDrawerIcon('info'),
-                    drawerLabel: 'A ANTAQ',
-                }}
+                options={{ title: 'A ANTAQ', drawerIcon: makeDrawerIcon('info') }}
             />
             <Drawer.Screen
                 name="Tutorial"
                 component={Tutorial}
-                options={{
-                    title: 'Tutorial',
-                    drawerIcon: makeDrawerIcon('menu-book'),
-                    drawerLabel: 'Tutorial',
-                }}
+                options={{ title: 'Tutorial', drawerIcon: makeDrawerIcon('menu-book') }}
             />
             <Drawer.Screen
                 name="NovidadesVersao"
                 component={NovidadesVersao}
-                options={{
-                    title: 'Novidades da Versão',
-                    drawerIcon: makeDrawerIcon('new-releases'),
-                    drawerLabel: 'Novidades da Versão',
-                }}
+                options={{ title: 'Novidades da Versão', drawerIcon: makeDrawerIcon('new-releases') }}
             />
             <Drawer.Screen
                 name="SituacaoServico"
                 component={SituacaoServico}
-                options={{
-                    title: 'Situação do Serviço',
-                    drawerIcon: makeDrawerIcon('wifi'),
-                    drawerLabel: 'Situação do Serviço',
-                }}
+                options={{ title: 'Situação do Serviço', drawerIcon: makeDrawerIcon('wifi') }}
             />
 
-            {/* Rotas “ocultas” no Drawer */}
-            <Drawer.Screen
-                name="EmAndamento"
-                component={EmAndamento}
-                options={{ title: 'Em Andamento', drawerItemStyle: { display: 'none' } }}
-            />
-            <Drawer.Screen
-                name="PainelEmpresas"
-                component={PainelEmpresas}
-                options={{ title: 'Painel de Empresas', drawerItemStyle: { display: 'none' } }}
-            />
-            <Drawer.Screen
-                name="EsquemasOperacionais"
-                component={EsquemasOperacionais}
-                options={{ title: 'Esquemas Operacionais', drawerItemStyle: { display: 'none' } }}
-            />
-            <Drawer.Screen
-                name="ServicosNaoAutorizados"
-                component={ServicosNaoAutorizados}
-                options={{ title: 'Serviços Não Autorizados', drawerItemStyle: { display: 'none' } }}
-            />
-            <Drawer.Screen
-                name="Notificacoes"
-                component={Notificacoes}
-                options={{ title: 'Notificações', drawerItemStyle: { display: 'none' } }}
-            />
+            {/* Rotas ocultas */}
+            <Drawer.Screen name="EmAndamento" component={EmAndamento} options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="PainelEmpresas" component={PainelEmpresas} options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="EsquemasOperacionais" component={EsquemasOperacionais} options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="ServicosNaoAutorizados" component={ServicosNaoAutorizados} options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="Notificacoes" component={Notificacoes} options={{ drawerItemStyle: { display: 'none' } }} />
         </Drawer.Navigator>
-
     );
 }
