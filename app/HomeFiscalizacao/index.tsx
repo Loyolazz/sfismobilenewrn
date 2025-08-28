@@ -23,6 +23,7 @@ import { listarMensagensPush } from '@/src/api/notificacoes';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
 import styles from './styles';
 import { getUltimaVersao } from '@/src/utils/releases';
+import theme from '@/src/theme';
 
 import MinhasFiscalizacoes from './MinhasFiscalizacoes';
 import FiscalizacaoRotina from './FiscalizacaoRotina';
@@ -76,10 +77,10 @@ const defaultScreenOptions = ({
                               }: {
     navigation: DrawerNavigationProp<DrawerParamList>;
 }): DrawerNavigationOptions => ({
-    headerStyle: { backgroundColor: '#0F3C52' },
-    headerTintColor: '#fff',
+    headerStyle: { backgroundColor: theme.colors.primaryDark },
+    headerTintColor: theme.colors.surface,
     headerTitleAlign: 'center',
-    drawerActiveTintColor: '#0F3C52',
+    drawerActiveTintColor: theme.colors.primaryDark,
     headerLeft: () => (
         <TouchableOpacity
             onPress={() => navigation.goBack()}
@@ -87,7 +88,7 @@ const defaultScreenOptions = ({
             accessibilityLabel="Voltar"
             style={{ paddingHorizontal: 8 }}
         >
-            <Icon name="arrow-back" size={24} color="#fff" />
+            <Icon name="arrow-back" size={24} color={theme.colors.surface} />
         </TouchableOpacity>
     ),
     swipeEnabled: false,
@@ -105,7 +106,7 @@ function UserAvatar({ user }: { user: Servidor | null }) {
             />
         );
     }
-    return <Icon name="person" size={48} color="#0F3C52" />;
+    return <Icon name="person" size={48} color={theme.colors.primaryDark} />;
 }
 
 function CustomDrawerContent(props: DrawerContentComponentProps) {
@@ -155,7 +156,7 @@ function CustomDrawerContent(props: DrawerContentComponentProps) {
                     accessibilityRole="button"
                     accessibilityLabel="Sair da conta"
                 >
-                    <Icon name="logout" size={24} color="#0F3C52" />
+                    <Icon name="logout" size={24} color={theme.colors.primaryDark} />
                     <Text style={styles.logoutText}>Sair</Text>
                 </TouchableOpacity>
             </DrawerContentScrollView>
@@ -236,7 +237,7 @@ function HomeScreen({ navigation, route }: { navigation: HomeScreenNav; route: a
             <View style={styles.header}>
 
                 <TouchableOpacity onPress={openDrawer} accessibilityLabel="Abrir menu">
-                    <Icon name="menu" size={28} color="#fff" />
+                    <Icon name="menu" size={28} color={theme.colors.surface} />
                 </TouchableOpacity>
 
                 <Text style={styles.headerTitle}>SFISMobile</Text>
@@ -245,7 +246,7 @@ function HomeScreen({ navigation, route }: { navigation: HomeScreenNav; route: a
                     <Icon
                         name={hasUnread ? 'notifications-unread' : 'notifications'}
                         size={24}
-                        color="#fff"
+                        color={theme.colors.surface}
                     />
                 </TouchableOpacity>
             </View>
@@ -262,9 +263,9 @@ function HomeScreen({ navigation, route }: { navigation: HomeScreenNav; route: a
                         accessibilityRole="button"
                         accessibilityLabel={item.title}
                     >
-                        <Icon name={item.icon as any} size={24} color="#0F3C52" />
+                        <Icon name={item.icon as any} size={24} color={theme.colors.primaryDark} />
                         <Text style={styles.cardText}>{item.title}</Text>
-                        <Icon name="chevron-right" size={24} color="#0F3C52" />
+                        <Icon name="chevron-right" size={24} color={theme.colors.primaryDark} />
                     </TouchableOpacity>
                 ))}
             </ScrollView>
