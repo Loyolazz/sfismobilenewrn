@@ -1,7 +1,8 @@
 import { StyleSheet } from 'react-native';
 import theme from '@/src/theme';
+import { scale, verticalScale } from '@/src/utils/responsive';
 
-export const CARD_GRADIENT = ['#0B3556', '#153D5D'];
+export const CARD_GRADIENT = [theme.colors.primary, theme.colors.primaryDark];
 
 const styles = StyleSheet.create({
     /* ------ áreas gerais ------ */
@@ -11,38 +12,38 @@ const styles = StyleSheet.create({
     },
     scroll: { flex: 1 },
     container: {
-        paddingHorizontal: 16,
-        paddingBottom: 24,
+        paddingHorizontal: theme.spacing.md,
+        paddingBottom: theme.spacing.lg,
     },
 
     /* ------ header (escuro, título central) ------ */
     header: {
-        height: 56,
+        height: verticalScale(56),
         backgroundColor: theme.colors.primaryDark,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: 16,
+        paddingHorizontal: theme.spacing.md,
     },
     headerTitle: {
         color: theme.colors.surface,
-        fontSize: 18,
+        fontSize: scale(18),
         fontWeight: '600',
     },
 
     /* ------ greeting ------ */
     greetingBox: {
-        backgroundColor: '#0B3556',
-        borderBottomLeftRadius: 12,
-        borderBottomRightRadius: 12,
-        paddingHorizontal: 16,
-        paddingTop: 16,
-        paddingBottom: 20,
-        marginBottom: 16,
+        backgroundColor: theme.colors.primary,
+        borderBottomLeftRadius: theme.radius.md,
+        borderBottomRightRadius: theme.radius.md,
+        paddingHorizontal: theme.spacing.md,
+        paddingTop: theme.spacing.md,
+        paddingBottom: theme.spacing.lg,
+        marginBottom: theme.spacing.md,
     },
     greetingText: {
         color: '#E8F1F8',
-        fontSize: 20,
+        fontSize: scale(20),
         fontWeight: '500',
     },
     greetingStrong: {
@@ -51,8 +52,8 @@ const styles = StyleSheet.create({
     },
     greetingSub: {
         color: '#C8D7E4',
-        marginTop: 6,
-        fontSize: 14,
+        marginTop: theme.spacing.xs,
+        fontSize: theme.typography.body.fontSize,
     },
 
     /* ------ grid 2×1 de cards ------ */
@@ -63,12 +64,12 @@ const styles = StyleSheet.create({
     },
     tileWrapper: {
         width: '48%',
-        marginBottom: 16,
+        marginBottom: theme.spacing.md,
     },
     tile: {
-        height: 180,
-        borderRadius: 18,
-        padding: 16,
+        height: verticalScale(180),
+        borderRadius: theme.radius.lg,
+        padding: theme.spacing.md,
         justifyContent: 'center',
         alignItems: 'center',
         // sombra leve
@@ -79,18 +80,18 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     tileIconWrap: {
-        width: 56,
-        height: 56,
-        borderRadius: 28,
+        width: scale(56),
+        height: scale(56),
+        borderRadius: scale(28),
         backgroundColor: 'rgba(255,255,255,0.14)',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 12,
+        marginBottom: theme.spacing.sm,
     },
     tileText: {
         color: '#FFFFFF',
-        fontSize: 18,
-        lineHeight: 22,
+        fontSize: scale(18),
+        lineHeight: scale(22),
         fontWeight: '600',
         textAlign: 'center',
     },
@@ -99,36 +100,36 @@ const styles = StyleSheet.create({
     versionText: {
         textAlign: 'center',
         color: '#A0A8B2',
-        marginTop: 8,
+        marginTop: theme.spacing.sm,
     },
 
     /* ------ drawer ------ */
     drawerSafe: { flex: 1 },
-    drawerContent: { paddingBottom: 24 },
+    drawerContent: { paddingBottom: theme.spacing.lg },
     userSection: {
         alignItems: 'center',
-        paddingVertical: 16,
+        paddingVertical: theme.spacing.md,
         borderBottomWidth: StyleSheet.hairlineWidth,
         borderBottomColor: '#E6E9EE',
-        marginBottom: 8,
+        marginBottom: theme.spacing.sm,
     },
     userAvatar: {
-        width: 64,
-        height: 64,
-        borderRadius: 32,
-        marginBottom: 8,
+        width: scale(64),
+        height: scale(64),
+        borderRadius: scale(32),
+        marginBottom: theme.spacing.sm,
     },
-    userName: { fontWeight: '700', fontSize: 16, color: '#0B1F33' },
-    userInfo: { color: '#4B5B70', marginTop: 2 },
-    userExtra: { color: '#64748B', fontSize: 12, marginTop: 2 },
+    userName: { fontWeight: '700', fontSize: scale(16), color: '#0B1F33' },
+    userInfo: { color: '#4B5B70', marginTop: scale(2) },
+    userExtra: { color: '#64748B', fontSize: scale(12), marginTop: scale(2) },
 
     logout: {
         flexDirection: 'row',
         alignItems: 'center',
-        gap: 8,
-        paddingHorizontal: 16,
-        paddingVertical: 10,
-        marginTop: 8,
+        gap: theme.spacing.sm,
+        paddingHorizontal: theme.spacing.md,
+        paddingVertical: theme.spacing.sm,
+        marginTop: theme.spacing.sm,
     },
     logoutText: {
         color: theme.colors.primaryDark,
@@ -141,23 +142,23 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgba(0,0,0,0.35)',
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 24,
+        padding: theme.spacing.lg,
     },
     modalContent: {
         backgroundColor: '#fff',
-        borderRadius: 14,
+        borderRadius: theme.radius.md,
         width: '100%',
-        padding: 16,
+        padding: theme.spacing.md,
     },
-    modalTitle: { fontSize: 16, fontWeight: '700', marginBottom: 8 },
-    modalItem: { fontSize: 14, marginBottom: 4, color: '#2C3E50' },
+    modalTitle: { fontSize: scale(16), fontWeight: '700', marginBottom: theme.spacing.sm },
+    modalItem: { fontSize: scale(14), marginBottom: theme.spacing.xs, color: '#2C3E50' },
     modalButton: {
-        marginTop: 12,
+        marginTop: theme.spacing.md,
         alignSelf: 'flex-end',
-        paddingHorizontal: 16,
-        paddingVertical: 10,
+        paddingHorizontal: theme.spacing.md,
+        paddingVertical: theme.spacing.sm,
         backgroundColor: theme.colors.primaryDark,
-        borderRadius: 10,
+        borderRadius: theme.radius.md,
     },
     modalButtonText: { color: '#fff', fontWeight: '600' },
 });
