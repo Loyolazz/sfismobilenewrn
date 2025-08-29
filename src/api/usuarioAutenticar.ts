@@ -22,8 +22,8 @@ export type Servidor = {
   Foto: string;
 
   /** Nil no SOAP -> null aqui */
-  IDPostoAvancado: number | null;
-  IDUnidadeOrganizacionalPostoAvancado: number | null;
+  IDPostoAvancado: boolean  | null;
+  IDUnidadeOrganizacionalPostoAvancado: boolean  | null;
 
   IDPerfilFiscalizacao: number | null;
 

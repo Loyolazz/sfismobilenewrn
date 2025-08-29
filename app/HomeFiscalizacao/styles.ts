@@ -110,24 +110,46 @@ const styles = StyleSheet.create({
     drawerScrollContent: { paddingBottom: 24 },
 
     // Banner (gradiente + sombra)
+    /* --- Banner melhorado --- */
     drawerBanner: {
         marginHorizontal: 16,
         marginTop: 12,
-        borderRadius: 16,
+        borderRadius: 20,
         overflow: 'hidden',
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.12,
         shadowRadius: 8,
         elevation: 3,
+        position: 'relative',
     },
+// shapes circulares de fundo (decor)
+    drawerDecorA: {
+        position: 'absolute',
+        right: -30,
+        top: -30,
+        width: 140,
+        height: 140,
+        borderRadius: 70,
+        backgroundColor: 'rgba(255,255,255,0.08)',
+    },
+    drawerDecorB: {
+        position: 'absolute',
+        right: 30,
+        top: 30,
+        width: 90,
+        height: 90,
+        borderRadius: 45,
+        backgroundColor: 'rgba(255,255,255,0.06)',
+    },
+
     drawerBannerTop: {
         paddingHorizontal: 16,
         paddingTop: 16,
-        paddingBottom: 8,
+        paddingBottom: 6,
         alignItems: 'flex-end',
     },
-    drawerLogo: { width: 92, height: 28, opacity: 0.95 },
+    drawerLogo: { width: 96, height: 28, opacity: 0.95 },
 
     drawerHeaderRow: {
         flexDirection: 'row',
@@ -135,36 +157,96 @@ const styles = StyleSheet.create({
         paddingHorizontal: 16,
         paddingBottom: 16,
     },
-    drawerAvatar: {
-        width: 64, height: 64, borderRadius: 32,
-        borderWidth: 2, borderColor: '#fff',
-        backgroundColor: '#fff', marginRight: 12,
-    },
-    drawerAvatarFallback: {
-        width: 64, height: 64, borderRadius: 32,
-        backgroundColor: '#fff',
-        alignItems: 'center', justifyContent: 'center',
-        borderWidth: 2, borderColor: '#fff',
+
+// avatar + ring
+    drawerAvatarRing: {
+        width: 72,
+        height: 72,
+        borderRadius: 36,
+        backgroundColor: 'rgba(255,255,255,0.35)',
+        alignItems: 'center',
+        justifyContent: 'center',
         marginRight: 12,
     },
-    drawerHeaderText: { flex: 1, minWidth: 0 },
-    drawerName: { color: '#fff', fontSize: 18, fontWeight: '700' },
-    drawerEmail: { color: 'rgba(255,255,255,0.9)', fontSize: 13, marginTop: 2 },
+    drawerAvatar: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        borderWidth: 2,
+        borderColor: '#fff',
+        backgroundColor: '#fff',
+    },
+    drawerAvatarFallback: {
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        backgroundColor: '#fff',
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderWidth: 2,
+        borderColor: '#fff',
+    },
 
-    drawerChipsRow: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, gap: 8 },
-    drawerChip: {
-        flexDirection: 'row', alignItems: 'center', gap: 6,
-        paddingHorizontal: 10, paddingVertical: 6,
+    drawerHeaderText: { flex: 1, minWidth: 0 },
+
+    drawerNameRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+    },
+    drawerName: { color: '#fff', fontSize: 18, fontWeight: '800', maxWidth: '110%' },
+
+// badge de perfil
+    perfilBadge: {
         backgroundColor: '#E5EEF9',
         borderRadius: 999,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
     },
-    drawerChipText: { color: '#0A2647', fontSize: 12, fontWeight: '600' },
+    perfilBadgeText: {
+        color: '#0A2647',
+        fontSize: 12,
+        fontWeight: '700',
+    },
 
-    // Card da lista de itens
+// pílula grande para unidade
+    unidadePill: {
+        marginTop: 10,
+        alignSelf: 'flex-start',
+        backgroundColor: '#EAF1FA',
+        borderRadius: 999,
+        paddingHorizontal: 12,
+        paddingVertical: 8,
+        flexDirection: 'row',
+        alignItems: 'center',
+        maxWidth: '100%',
+    },
+    unidadePillText: {
+        color: '#0A2647',
+        fontSize: 13,
+        fontWeight: '700',
+    },
+
+// chips compactos
+    drawerChipsRow: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, gap: 8 },
+    drawerChipSm: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 6,
+        paddingHorizontal: 10,
+        paddingVertical: 6,
+        backgroundColor: 'rgba(255,255,255,0.85)',
+        borderRadius: 999,
+    },
+    drawerChipSmText: { color: '#0A2647', fontSize: 12, fontWeight: '600' },
+
+// (mantém estes)
     drawerListCard: {
         marginTop: 14,
         marginHorizontal: 16,
-        backgroundColor: '#fff',
         borderRadius: 14,
         overflow: 'hidden',
         shadowColor: '#000',
@@ -173,23 +255,20 @@ const styles = StyleSheet.create({
         shadowRadius: 6,
         elevation: 2,
     },
-
-    // Rodapé
-    drawerFooter: { paddingHorizontal: 16, paddingTop: 12 },
+    drawerFooter: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16 },
     logoutPill: {
-        flexDirection: 'row', alignItems: 'center', gap: 8,
-        alignSelf: 'flex-start',
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 8,
+        alignSelf: 'stretch',
         paddingHorizontal: 16,
-        paddingVertical: 10,
+        paddingVertical: 14,
         backgroundColor: '#fff',
-        borderColor: '#D7E1EE',
-        width: '100%',
         borderRadius: 999,
         borderWidth: 1,
-        paddingBottom: 10,
-        marginBottom: 20,
+        borderColor: '#D7E1EE',
     },
-    logoutPillText: { color: theme?.colors?.primaryDark ?? '#0A2647', fontWeight: '700' },
+    logoutPillText: { color: theme?.colors?.primaryDark ?? '#0A2647', fontWeight: '800' },
 
     /* ---------- Modal (Novidades) ---------- */
     modalOverlay: {

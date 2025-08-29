@@ -90,7 +90,7 @@ const defaultScreenOptions = ({
     swipeEnabled: false,
 });
 
-/* --------------------------- Drawer custom content (NOVO) --------------------------- */
+/* --------------------------- Drawer custom content (melhorado) --------------------------- */
 function CustomDrawerContent(props: any) {
     const router = useRouter();
     const [user, setUser] = useState<Servidor | null>(null);
@@ -107,9 +107,7 @@ function CustomDrawerContent(props: any) {
                 if (mounted) setUser(null);
             }
         })();
-        return () => {
-            mounted = false;
-        };
+        return () => { mounted = false; };
     }, []);
 
     const handleLogout = useCallback(async () => {
@@ -117,61 +115,83 @@ function CustomDrawerContent(props: any) {
         router.replace('/Login');
     }, [router]);
 
-    const unidade = (user as any)?.NOUnidade || (user as any)?.Unidade || '';
+    const nome = (user?.NOUsuario || '').toUpperCase();
+    const login = user?.EEFuncionario || user?.NOLoginUsuario || '';
+    const unidade =
+        (user as any)?.SGUnidade ||
+        (user as any)?.NOUnidade ||
+        (user as any)?.Unidade ||
+        '';
+    const matricula = user?.NRMatricula ? `Matrícula ${user.NRMatricula}` : '';
+
     const perfilId = (user as any)?.IDPerfilFiscalizacao;
-    const noUnidOrg = (user as any)?.NOUnidadeOrganizacional || '';
-    const perfil =
-        typeof perfilId === 'number'
-            ? ({1: 'Administrador', 2: 'Coordenador', 3: 'Fiscal'} as any)[perfilId] || `Perfil #${perfilId}`
-            : '';
+
 
     return (
         <SafeAreaView style={styles.drawerSafe}>
-            <StatusBar style="light"/>
-            <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerScrollContent}>
+            <StatusBar style="light" />
+            <DrawerContentScrollView
+                {...props}
+                contentContainerStyle={styles.drawerScrollContent}
+            >
                 {/* Banner */}
                 <LinearGradient colors={DRAWER_BANNER_GRADIENT} style={styles.drawerBanner}>
+                    {/* shapes decorativos */}
+                    <View style={styles.drawerDecorA} />
+                    <View style={styles.drawerDecorB} />
+
+                    {/* topo com logo */}
                     <View style={styles.drawerBannerTop}>
-                        <Image source={logoAntaq} style={styles.drawerLogo} resizeMode="contain"/>
+                        <Image source={logoAntaq} style={styles.drawerLogo} resizeMode="contain" />
                     </View>
 
+                    {/* cabeçalho do usuário */}
                     <View style={styles.drawerHeaderRow}>
-                        {user?.Foto ? (
-                            <Image
-                                source={{uri: `data:image/png;base64,${user.Foto}`}}
-                                style={styles.drawerAvatar}
-                            />
-                        ) : (
-                            <View style={styles.drawerAvatarFallback}>
-                                <Icon name="person" size={28} color={theme.colors.primaryDark}/>
-                            </View>
-                        )}
+                        {/* avatar com “anel” */}
+                        <View style={styles.drawerAvatarRing}>
+                            {user?.Foto ? (
+                                <Image
+                                    source={{ uri: `data:image/png;base64,${user.Foto}` }}
+                                    style={styles.drawerAvatar}
+                                />
+                            ) : (
+                                <View style={styles.drawerAvatarFallback}>
+                                    <Icon name="person" size={28} color={theme.colors.primaryDark} />
+                                </View>
+                            )}
+                        </View>
 
                         <View style={styles.drawerHeaderText}>
-                            <Text style={styles.drawerName} numberOfLines={1}>
-                                {(user?.NOUsuario || '').toUpperCase()}
-                            </Text>
-                            <Text style={styles.drawerEmail} numberOfLines={1}>
-                                {user?.EEFuncionario || user?.NOLoginUsuario || ''}
-                            </Text>
+                            <View style={styles.drawerNameRow}>
+                                <Text style={styles.drawerName} numberOfLines={1}  ellipsizeMode="tail">
+                                    {nome}
+                                </Text>
+                            </View>
 
+                            {/* Unidade/UGA em pílula grande */}
+                            {!!unidade && (
+                                <View style={styles.unidadePill}>
+                                    <Icon name="home-work" size={16} color="#0A2647" />
+                                    <Text style={styles.unidadePillText} numberOfLines={1} ellipsizeMode="tail">
+                                        {unidade}
+                                    </Text>
+                                </View>
+                            )}
+
+                            {/* chips compactos */}
                             <View style={styles.drawerChipsRow}>
-                                {!!user?.NRMatricula && (
-                                    <View style={styles.drawerChip}>
-                                        <Icon name="badge" size={14} color="#0A2647"/>
-                                        <Text style={styles.drawerChipText}>Matrícula {user.NRMatricula}</Text>
+                                {!!matricula && (
+                                    <View style={styles.drawerChipSm}>
+                                        <Icon name="badge" size={13} color="#0A2647" />
+                                        <Text style={styles.drawerChipSmText}>{matricula}</Text>
                                     </View>
                                 )}
-                                {!!unidade && (
-                                    <View style={styles.drawerChip}>
-                                        <Icon name="home-work" size={14} color="#0A2647"/>
-                                        <Text style={styles.drawerChipText}>{unidade}</Text>
-                                    </View>
-                                )}
-                                {!!perfil && (
-                                    <View style={styles.drawerChip}>
-                                        <Icon name="verified-user" size={14} color="#0A2647"/>
-                                        <Text style={styles.drawerChipText}>{noUnidOrg}</Text>
+                                {!!login && (
+                                    <View style={styles.drawerChipSm}>
+                                        <Icon name="account-circle" size={13} color="#0A2647" />
+                                        <Text style={styles.drawerChipSmText} numberOfLines={1} ellipsizeMode="tail">
+                                            {login}
+                                        </Text>
                                     </View>
                                 )}
                             </View>
@@ -179,20 +199,22 @@ function CustomDrawerContent(props: any) {
                     </View>
                 </LinearGradient>
 
-                {/* Lista de itens — renderiza só quando o state existir */}
+                {/* Lista de itens (só quando state existir) */}
                 <View style={styles.drawerListCard}>
                     {props?.state?.routes ? <DrawerItemList {...props} /> : null}
                 </View>
             </DrawerContentScrollView>
+
+            {/* Rodapé / Sair */}
             <View style={styles.drawerFooter}>
                 <Pressable
                     onPress={handleLogout}
                     accessibilityRole="button"
                     accessibilityLabel="Sair da conta"
                     style={styles.logoutPill}
-                    android_ripple={{color: 'rgba(10,38,71,0.12)', radius: 28}}
+                    android_ripple={{ color: 'rgba(10,38,71,0.12)', radius: 28 }}
                 >
-                    <Icon name="logout" size={20} color={theme.colors.primaryDark}/>
+                    <Icon name="logout" size={20} color={theme.colors.primaryDark} />
                     <Text style={styles.logoutPillText}>Sair</Text>
                 </Pressable>
             </View>
