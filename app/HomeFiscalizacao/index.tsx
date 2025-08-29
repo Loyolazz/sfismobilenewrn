@@ -3,7 +3,6 @@ import {
     View,
     Text,
     ScrollView,
-    TouchableOpacity,
     Image,
     Modal,
     Pressable,
@@ -23,7 +22,7 @@ import Icon from '@/src/components/Icon';
 import {useRouter, useLocalSearchParams} from 'expo-router';
 import {loadSession, clearSession} from '@/src/services/session';
 import type {Servidor} from '@/src/api/usuarioAutenticar';
-import styles, {CARD_GRADIENT} from './styles';
+import styles, {CARD_GRADIENT, DRAWER_BANNER_GRADIENT} from './styles';
 import {getUltimaVersao} from '@/src/utils/releases';
 import theme from '@/src/theme';
 
@@ -91,22 +90,12 @@ const defaultScreenOptions = ({
     swipeEnabled: false,
 });
 
-/* --------------------------- Drawer custom content ------------------------ */
-function UserAvatar({user}: { user: Servidor | null }) {
-    if (user?.Foto) {
-        return (
-            <Image
-                source={{uri: `data:image/png;base64,${user.Foto}`}}
-                style={styles.userAvatar}
-            />
-        );
-    }
-    return <Icon name="person" size={48} color={theme.colors.primaryDark}/>;
-}
-
+/* --------------------------- Drawer custom content (NOVO) --------------------------- */
 function CustomDrawerContent(props: any) {
     const router = useRouter();
     const [user, setUser] = useState<Servidor | null>(null);
+
+    const logoAntaq = require('@/assets/icon/logo-navbar.png');
 
     useEffect(() => {
         let mounted = true;
@@ -128,34 +117,85 @@ function CustomDrawerContent(props: any) {
         router.replace('/Login');
     }, [router]);
 
+    const unidade = (user as any)?.NOUnidade || (user as any)?.Unidade || '';
+    const perfilId = (user as any)?.IDPerfilFiscalizacao;
+    const noUnidOrg = (user as any)?.NOUnidadeOrganizacional || '';
+    const perfil =
+        typeof perfilId === 'number'
+            ? ({1: 'Administrador', 2: 'Coordenador', 3: 'Fiscal'} as any)[perfilId] || `Perfil #${perfilId}`
+            : '';
+
     return (
         <SafeAreaView style={styles.drawerSafe}>
             <StatusBar style="light"/>
-            <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerContent}>
-                <View style={styles.userSection}>
-                    <UserAvatar user={user}/>
-                    <Text style={styles.userName}>{user?.NOUsuario ?? ''}</Text>
-                    <Text style={styles.userInfo}>{user?.NOLoginUsuario ?? ''}</Text>
-                    {user?.NRMatricula ? (
-                        <Text style={styles.userExtra}>Matrícula: {user.NRMatricula}</Text>
-                    ) : null}
-                    {user?.EEFuncionario ? (
-                        <Text style={styles.userExtra}>{user.EEFuncionario}</Text>
-                    ) : null}
+            <DrawerContentScrollView {...props} contentContainerStyle={styles.drawerScrollContent}>
+                {/* Banner */}
+                <LinearGradient colors={DRAWER_BANNER_GRADIENT} style={styles.drawerBanner}>
+                    <View style={styles.drawerBannerTop}>
+                        <Image source={logoAntaq} style={styles.drawerLogo} resizeMode="contain"/>
+                    </View>
+
+                    <View style={styles.drawerHeaderRow}>
+                        {user?.Foto ? (
+                            <Image
+                                source={{uri: `data:image/png;base64,${user.Foto}`}}
+                                style={styles.drawerAvatar}
+                            />
+                        ) : (
+                            <View style={styles.drawerAvatarFallback}>
+                                <Icon name="person" size={28} color={theme.colors.primaryDark}/>
+                            </View>
+                        )}
+
+                        <View style={styles.drawerHeaderText}>
+                            <Text style={styles.drawerName} numberOfLines={1}>
+                                {(user?.NOUsuario || '').toUpperCase()}
+                            </Text>
+                            <Text style={styles.drawerEmail} numberOfLines={1}>
+                                {user?.EEFuncionario || user?.NOLoginUsuario || ''}
+                            </Text>
+
+                            <View style={styles.drawerChipsRow}>
+                                {!!user?.NRMatricula && (
+                                    <View style={styles.drawerChip}>
+                                        <Icon name="badge" size={14} color="#0A2647"/>
+                                        <Text style={styles.drawerChipText}>Matrícula {user.NRMatricula}</Text>
+                                    </View>
+                                )}
+                                {!!unidade && (
+                                    <View style={styles.drawerChip}>
+                                        <Icon name="home-work" size={14} color="#0A2647"/>
+                                        <Text style={styles.drawerChipText}>{unidade}</Text>
+                                    </View>
+                                )}
+                                {!!perfil && (
+                                    <View style={styles.drawerChip}>
+                                        <Icon name="verified-user" size={14} color="#0A2647"/>
+                                        <Text style={styles.drawerChipText}>{noUnidOrg}</Text>
+                                    </View>
+                                )}
+                            </View>
+                        </View>
+                    </View>
+                </LinearGradient>
+
+                {/* Lista de itens — renderiza só quando o state existir */}
+                <View style={styles.drawerListCard}>
+                    {props?.state?.routes ? <DrawerItemList {...props} /> : null}
                 </View>
-
-                <DrawerItemList {...props} />
-
-                <TouchableOpacity
-                    style={styles.logout}
+            </DrawerContentScrollView>
+            <View style={styles.drawerFooter}>
+                <Pressable
                     onPress={handleLogout}
                     accessibilityRole="button"
                     accessibilityLabel="Sair da conta"
+                    style={styles.logoutPill}
+                    android_ripple={{color: 'rgba(10,38,71,0.12)', radius: 28}}
                 >
-                    <Icon name="logout" size={24} color={theme.colors.primaryDark}/>
-                    <Text style={styles.logoutText}>Sair</Text>
-                </TouchableOpacity>
-            </DrawerContentScrollView>
+                    <Icon name="logout" size={20} color={theme.colors.primaryDark}/>
+                    <Text style={styles.logoutPillText}>Sair</Text>
+                </Pressable>
+            </View>
         </SafeAreaView>
     );
 }
@@ -178,17 +218,17 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
         if (route?.params?.showReleases) setShowModal(true);
     }, [route?.params?.showReleases]);
 
-    const items = useMemo(
-        () =>
-            ([
-                {key: 'MinhasFiscalizacoes', title: 'Minhas Fiscalizações', icon: 'assignment'},
-                {key: 'FiscalizacaoRotina', title: 'Fiscalizações de Rotina', icon: 'sync'},
-                {key: 'ConsultarAutorizadas', title: 'Consultar Autorizadas', icon: 'search'},
-                {key: 'EmAndamento', title: 'Em Andamento', icon: 'hourglass-empty'},
-                {key: 'PainelEmpresas', title: 'Painel de Empresas', icon: 'business'},
-                {key: 'EsquemasOperacionais', title: 'Esquemas Operacionais', icon: 'schema'},
-                {key: 'ServicosNaoAutorizados', title: 'Serviços Não Autorizados', icon: 'report'},
-            ] as const),
+    type Item = { key: keyof DrawerParamList; title: string; icon: string };
+    const items: Item[] = useMemo(
+        () => [
+            {key: 'MinhasFiscalizacoes', title: 'Minhas Fiscalizações', icon: 'assignment'},
+            {key: 'FiscalizacaoRotina', title: 'Fiscalizações de Rotina', icon: 'sync'},
+            {key: 'ConsultarAutorizadas', title: 'Consultar Autorizadas', icon: 'search'},
+            {key: 'EmAndamento', title: 'Em Andamento', icon: 'hourglass-empty'},
+            {key: 'PainelEmpresas', title: 'Painel de Empresas', icon: 'business'},
+            {key: 'EsquemasOperacionais', title: 'Esquemas Operacionais', icon: 'schema'},
+            {key: 'ServicosNaoAutorizados', title: 'Serviços Não Autorizados', icon: 'report'},
+        ],
         []
     );
 
@@ -202,9 +242,8 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
     const versaoStr = String(ultima?.versao ?? '—').replace(/^vers[aã]o\s*/i, '');
 
     return (
-        // inclui topo para respeitar o notch; saudação colada no header
         <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
-            <StatusBar style="dark"/>
+            <StatusBar style="light"/>
 
             {/* Header */}
             <View style={styles.header}>
@@ -221,37 +260,38 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
 
                 <Text style={styles.headerTitle}>Início</Text>
                 <View style={{width: 40, height: 40}}/>
-
             </View>
+
+            {/* Saudação */}
             <View style={styles.greetingBox}>
                 <Text style={styles.greetingText}>
                     Olá, <Text style={styles.greetingStrong}>{userName}</Text>!
                 </Text>
                 <Text style={styles.greetingSub}>O que deseja fazer hoje?</Text>
             </View>
+
+            {/* Conteúdo */}
             <ScrollView
                 style={styles.scroll}
                 contentInsetAdjustmentBehavior="never"
                 keyboardShouldPersistTaps="handled"
                 contentContainerStyle={[
-                    styles.scrollContent, // sem paddingTop
+                    styles.scrollContent,
                     {paddingBottom: insets.bottom + 16},
                 ]}
             >
-
-                {/* Seção com padding lateral apenas para o grid/rodapé */}
                 <View style={styles.section}>
                     <View style={styles.grid}>
-                        {items.map((item) => (
+                        {(items ?? []).map((item) => (
                             <Pressable
-                                key={item.key}
+                                key={item.key as string}
                                 onPress={() => navigation.navigate(item.key as any)}
                                 accessibilityRole="button"
                                 accessibilityLabel={`Abrir ${item.title}`}
                                 android_ripple={{color: 'rgba(255,255,255,0.08)'}}
                                 style={({pressed}) => [{opacity: pressed ? 0.96 : 1}, styles.tileWrapper]}
                                 hitSlop={8}
-                                testID={`tile-${item.key}`}
+                                testID={`tile-${item.key as string}`}
                             >
                                 <LinearGradient
                                     colors={CARD_GRADIENT}
@@ -267,30 +307,29 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
                             </Pressable>
                         ))}
                     </View>
+
+                    <Text style={styles.versionText}>Versão WS: {versaoStr}</Text>
                 </View>
             </ScrollView>
-            <View style={{width: '100%', alignItems: 'center', marginEnd: 160}}>
-                <Text style={styles.versionText}>Versão WS: {versaoStr}</Text>
-            </View>
 
             {/* Modal de novidades */}
             <Modal visible={showModal} transparent animationType="slide">
                 <View style={styles.modalOverlay}>
                     <View style={styles.modalContent}>
                         <Text style={styles.modalTitle}>{ultima?.versao}</Text>
-                        {ultima?.novidades?.map((n: string, i: number) => (
+                        {(ultima?.novidades ?? []).map((n: string, i: number) => (
                             <Text key={i} style={styles.modalItem}>
                                 • {n}
                             </Text>
                         ))}
-                        <TouchableOpacity
+                        <Pressable
                             onPress={closeModal}
                             style={styles.modalButton}
                             accessibilityRole="button"
                             accessibilityLabel="Fechar"
                         >
                             <Text style={styles.modalButtonText}>Fechar</Text>
-                        </TouchableOpacity>
+                        </Pressable>
                     </View>
                 </View>
             </Modal>
@@ -324,7 +363,6 @@ export default function HomeFiscalizacao() {
                 options={{
                     title: 'Minhas Fiscalizações',
                     drawerIcon: makeDrawerIcon('assignment'),
-                    drawerLabel: 'Minhas Fiscalizações',
                     drawerItemStyle: {display: 'none'},
                 }}
             />
@@ -347,7 +385,7 @@ export default function HomeFiscalizacao() {
                 }}
             />
 
-            {/* Conteúdo do Drawer (mantido) */}
+            {/* Itens exibidos no Drawer */}
             <Drawer.Screen
                 name="RelatorioUsuario"
                 component={RelatorioUsuario}

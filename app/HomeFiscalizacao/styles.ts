@@ -6,8 +6,13 @@ const { width } = Dimensions.get('window');
 export const GAP = (theme?.spacing?.md as number) ?? 16;
 export const CARD_SIZE = Math.floor((width - GAP * 3) / 2);
 
-// Gradiente do "home old" tipado como tupla
+/* ---------- Gradientes (tuplas para o LinearGradient) ---------- */
 export const CARD_GRADIENT: readonly [ColorValue, ColorValue] = [
+    theme?.colors?.primaryDark ?? '#0A2647',
+    theme?.colors?.primary ?? '#1E3A59',
+];
+
+export const DRAWER_BANNER_GRADIENT: readonly [ColorValue, ColorValue] = [
     theme?.colors?.primaryDark ?? '#0A2647',
     theme?.colors?.primary ?? '#1E3A59',
 ];
@@ -40,8 +45,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: GAP,
         paddingTop: GAP,
         paddingBottom: GAP * 1.1,
-        marginTop: 0, // encostado no header
-        // sem radius no topo para parecer uma faixa contínua
+        marginTop: 0,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
     },
@@ -50,9 +54,7 @@ const styles = StyleSheet.create({
     greetingSub: { color: '#fff', marginTop: 4, fontSize: 14, opacity: 0.9 },
 
     /* ---------- seção com padding lateral (grid + versão) ---------- */
-    section: {
-        paddingHorizontal: GAP,
-    },
+    section: { paddingHorizontal: GAP },
 
     /* ---------- grid ---------- */
     grid: {
@@ -103,22 +105,122 @@ const styles = StyleSheet.create({
         paddingVertical: 16,
     },
 
-    /* ---------- drawer (já existente) ---------- */
-    drawerSafe: { flex: 1 },
-    drawerContent: { paddingBottom: 24 },
-    userSection: {
-        paddingTop: 52,
-        backgroundColor: theme?.colors?.primaryDark ?? '#0A2647',
-        paddingVertical: 30,
-        alignItems: 'center',
-    },
-    userAvatar: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#fff', marginBottom: 8 },
-    userName: { color: '#fff', fontSize: 18, fontWeight: '600' },
-    userInfo: { color: '#ddd', fontSize: 14 },
-    userExtra: { color: '#ddd', fontSize: 12, marginTop: 2 },
+    /* ===================== Drawer — NOVO VISUAL ===================== */
+    drawerSafe: { flex: 1, backgroundColor: '#F6F8FB' },
+    drawerScrollContent: { paddingBottom: 24 },
 
-    logout: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16 },
-    logoutText: { color: theme?.colors?.primaryDark ?? '#0A2647', fontWeight: '600' },
+    // Banner (gradiente + sombra)
+    drawerBanner: {
+        marginHorizontal: 16,
+        marginTop: 12,
+        borderRadius: 16,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        elevation: 3,
+    },
+    drawerBannerTop: {
+        paddingHorizontal: 16,
+        paddingTop: 16,
+        paddingBottom: 8,
+        alignItems: 'flex-end',
+    },
+    drawerLogo: { width: 92, height: 28, opacity: 0.95 },
+
+    drawerHeaderRow: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 16,
+        paddingBottom: 16,
+    },
+    drawerAvatar: {
+        width: 64, height: 64, borderRadius: 32,
+        borderWidth: 2, borderColor: '#fff',
+        backgroundColor: '#fff', marginRight: 12,
+    },
+    drawerAvatarFallback: {
+        width: 64, height: 64, borderRadius: 32,
+        backgroundColor: '#fff',
+        alignItems: 'center', justifyContent: 'center',
+        borderWidth: 2, borderColor: '#fff',
+        marginRight: 12,
+    },
+    drawerHeaderText: { flex: 1, minWidth: 0 },
+    drawerName: { color: '#fff', fontSize: 18, fontWeight: '700' },
+    drawerEmail: { color: 'rgba(255,255,255,0.9)', fontSize: 13, marginTop: 2 },
+
+    drawerChipsRow: { flexDirection: 'row', flexWrap: 'wrap', marginTop: 10, gap: 8 },
+    drawerChip: {
+        flexDirection: 'row', alignItems: 'center', gap: 6,
+        paddingHorizontal: 10, paddingVertical: 6,
+        backgroundColor: '#E5EEF9',
+        borderRadius: 999,
+    },
+    drawerChipText: { color: '#0A2647', fontSize: 12, fontWeight: '600' },
+
+    // Card da lista de itens
+    drawerListCard: {
+        marginTop: 14,
+        marginHorizontal: 16,
+        backgroundColor: '#fff',
+        borderRadius: 14,
+        overflow: 'hidden',
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.08,
+        shadowRadius: 6,
+        elevation: 2,
+    },
+
+    // Rodapé
+    drawerFooter: { paddingHorizontal: 16, paddingTop: 12 },
+    logoutPill: {
+        flexDirection: 'row', alignItems: 'center', gap: 8,
+        alignSelf: 'flex-start',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        backgroundColor: '#fff',
+        borderColor: '#D7E1EE',
+        width: '100%',
+        borderRadius: 999,
+        borderWidth: 1,
+        paddingBottom: 10,
+        marginBottom: 20,
+    },
+    logoutPillText: { color: theme?.colors?.primaryDark ?? '#0A2647', fontWeight: '700' },
+
+    /* ---------- Modal (Novidades) ---------- */
+    modalOverlay: {
+        flex: 1,
+        backgroundColor: 'rgba(0,0,0,0.35)',
+        justifyContent: 'center',
+        alignItems: 'center',
+        padding: GAP,
+    },
+    modalContent: {
+        backgroundColor: '#fff',
+        borderRadius: 14,
+        width: '100%',
+        padding: GAP,
+    },
+    modalTitle: {
+        fontSize: 16,
+        fontWeight: '700',
+        marginBottom: 8,
+        color: theme?.colors?.primaryDark ?? '#0A2647',
+    },
+    modalItem: { fontSize: 14, marginBottom: 6, color: '#2C3E50' },
+    modalButton: {
+        marginTop: 12,
+        alignSelf: 'flex-end',
+        paddingHorizontal: 16,
+        paddingVertical: 10,
+        backgroundColor: theme?.colors?.primaryDark ?? '#0A2647',
+        borderRadius: 8,
+    },
+    modalButtonText: { color: '#fff', fontWeight: '600' },
 });
 
 export default styles;

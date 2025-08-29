@@ -2,12 +2,32 @@ import { soapRequest } from "./antaq";
 
 /** Estrutura típica que volta do serviço (ajuste/estenda se necessário) */
 export type Servidor = {
-  IDUsuario?: string | number;
-  IDPerfilFiscalizacao?: string | number;
-  NOLoginUsuario?: string;
-  EEFuncionario?: string;
-  NRMatricula?: string;
-  STAtivo?: string | null;
+  // Do resultado de alto nível:
+  IDUsuario: number;
+  NOLoginUsuario: string;
+  EEFuncionario: string;
+  NRMatricula: number;
+  STAtivo: boolean | null;
+
+  // Campos do nó "servidor" (achatados para dentro de Servidor):
+  NRMatriculaServidor: number;
+  NOUsuario: string;
+  IDUnidadeOrganizacional: number;
+  NOUnidadeOrganizacional: string;
+  SGUnidade: string;
+  NOCargo: string;
+  NRCPF: string;
+
+  /** Base64 puro vindo do SOAP. Útil para montar o data URI na <Image /> */
+  Foto: string;
+
+  /** Nil no SOAP -> null aqui */
+  IDPostoAvancado: number | null;
+  IDUnidadeOrganizacionalPostoAvancado: number | null;
+
+  IDPerfilFiscalizacao: number | null;
+
+  /** Campo extra opcional seu (token JWT, etc.), caso exista no seu fluxo */
   Token?: string;
   [k: string]: any;
 };
