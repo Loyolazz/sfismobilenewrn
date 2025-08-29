@@ -1,166 +1,124 @@
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Dimensions, type ColorValue } from 'react-native';
 import theme from '@/src/theme';
-import { scale, verticalScale } from '@/src/utils/responsive';
 
-export const CARD_GRADIENT = [theme.colors.primary, theme.colors.primaryDark];
+const { width } = Dimensions.get('window');
+
+export const GAP = (theme?.spacing?.md as number) ?? 16;
+export const CARD_SIZE = Math.floor((width - GAP * 3) / 2);
+
+// Gradiente do "home old" tipado como tupla
+export const CARD_GRADIENT: readonly [ColorValue, ColorValue] = [
+    theme?.colors?.primaryDark ?? '#0A2647',
+    theme?.colors?.primary ?? '#1E3A59',
+];
 
 const styles = StyleSheet.create({
-    /* ------ áreas gerais ------ */
+    /* ---------- base ---------- */
     safeArea: {
         flex: 1,
-        backgroundColor: theme.colors.background ?? '#F2F4F7',
+        backgroundColor: theme?.colors?.background ?? '#EEF2F7',
     },
     scroll: { flex: 1 },
-    container: {
-        paddingHorizontal: theme.spacing.md,
-        paddingBottom: theme.spacing.lg,
+    scrollContent: {
+        paddingTop: 0, // cola no header
     },
 
-    /* ------ header (escuro, título central) ------ */
+    /* ---------- header ---------- */
     header: {
-        height: verticalScale(56),
-        backgroundColor: theme.colors.primaryDark,
+        height: 56,
+        backgroundColor: theme?.colors?.primaryDark ?? '#0A2647',
+        paddingHorizontal: GAP,
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: theme.spacing.md,
     },
-    headerTitle: {
-        color: theme.colors.surface,
-        fontSize: scale(18),
-        fontWeight: '600',
-    },
+    headerTitle: { color: '#fff', fontSize: 18, fontWeight: '600' },
 
-    /* ------ greeting ------ */
+    /* ---------- saudação FULL-BLEED ---------- */
     greetingBox: {
-        backgroundColor: theme.colors.primary,
-        borderBottomLeftRadius: theme.radius.md,
-        borderBottomRightRadius: theme.radius.md,
-        paddingHorizontal: theme.spacing.md,
-        paddingTop: theme.spacing.md,
-        paddingBottom: theme.spacing.lg,
-        marginBottom: theme.spacing.md,
+        backgroundColor: theme?.colors?.primaryDark ?? '#0A2647',
+        paddingHorizontal: GAP,
+        paddingTop: GAP,
+        paddingBottom: GAP * 1.1,
+        marginTop: 0, // encostado no header
+        // sem radius no topo para parecer uma faixa contínua
+        borderTopLeftRadius: 0,
+        borderTopRightRadius: 0,
     },
-    greetingText: {
-        color: '#E8F1F8',
-        fontSize: scale(20),
-        fontWeight: '500',
-    },
-    greetingStrong: {
-        color: '#FFFFFF',
-        fontWeight: '800',
-    },
-    greetingSub: {
-        color: '#C8D7E4',
-        marginTop: theme.spacing.xs,
-        fontSize: theme.typography.body.fontSize,
+    greetingText: { fontSize: 20, color: '#fff' },
+    greetingStrong: { fontWeight: '700' },
+    greetingSub: { color: '#fff', marginTop: 4, fontSize: 14, opacity: 0.9 },
+
+    /* ---------- seção com padding lateral (grid + versão) ---------- */
+    section: {
+        paddingHorizontal: GAP,
     },
 
-    /* ------ grid 2×1 de cards ------ */
+    /* ---------- grid ---------- */
     grid: {
+        paddingTop: GAP,
         flexDirection: 'row',
         flexWrap: 'wrap',
         justifyContent: 'space-between',
     },
     tileWrapper: {
-        width: '48%',
-        marginBottom: theme.spacing.md,
+        width: CARD_SIZE,
+        marginBottom: GAP,
     },
     tile: {
-        height: verticalScale(180),
-        borderRadius: theme.radius.lg,
-        padding: theme.spacing.md,
+        width: '100%',
+        height: CARD_SIZE, // quadrado
+        borderRadius: 16,
         justifyContent: 'center',
         alignItems: 'center',
-        // sombra leve
+        overflow: 'hidden',
+        // sombra sutil
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.15,
-        shadowRadius: 6,
-        elevation: 3,
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.12,
+        shadowRadius: 8,
+        elevation: 4,
     },
     tileIconWrap: {
-        width: scale(56),
-        height: scale(56),
-        borderRadius: scale(28),
-        backgroundColor: 'rgba(255,255,255,0.14)',
+        width: 64,
+        height: 64,
+        borderRadius: 32,
+        backgroundColor: 'rgba(255,255,255,0.12)',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: theme.spacing.sm,
+        marginBottom: 8,
     },
     tileText: {
         color: '#FFFFFF',
-        fontSize: scale(18),
-        lineHeight: scale(22),
+        fontSize: 16,
         fontWeight: '600',
         textAlign: 'center',
     },
 
-    /* ------ rodapé versão ------ */
+    /* ---------- rodapé ---------- */
     versionText: {
         textAlign: 'center',
-        color: '#A0A8B2',
-        marginTop: theme.spacing.sm,
+        fontSize: 12,
+        color: '#8B98A9',
+        paddingVertical: 16,
     },
 
-    /* ------ drawer ------ */
+    /* ---------- drawer (já existente) ---------- */
     drawerSafe: { flex: 1 },
-    drawerContent: { paddingBottom: theme.spacing.lg },
+    drawerContent: { paddingBottom: 24 },
     userSection: {
+        paddingTop: 52,
+        backgroundColor: theme?.colors?.primaryDark ?? '#0A2647',
+        paddingVertical: 30,
         alignItems: 'center',
-        paddingVertical: theme.spacing.md,
-        borderBottomWidth: StyleSheet.hairlineWidth,
-        borderBottomColor: '#E6E9EE',
-        marginBottom: theme.spacing.sm,
     },
-    userAvatar: {
-        width: scale(64),
-        height: scale(64),
-        borderRadius: scale(32),
-        marginBottom: theme.spacing.sm,
-    },
-    userName: { fontWeight: '700', fontSize: scale(16), color: '#0B1F33' },
-    userInfo: { color: '#4B5B70', marginTop: scale(2) },
-    userExtra: { color: '#64748B', fontSize: scale(12), marginTop: scale(2) },
+    userAvatar: { width: 64, height: 64, borderRadius: 32, backgroundColor: '#fff', marginBottom: 8 },
+    userName: { color: '#fff', fontSize: 18, fontWeight: '600' },
+    userInfo: { color: '#ddd', fontSize: 14 },
+    userExtra: { color: '#ddd', fontSize: 12, marginTop: 2 },
 
-    logout: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        gap: theme.spacing.sm,
-        paddingHorizontal: theme.spacing.md,
-        paddingVertical: theme.spacing.sm,
-        marginTop: theme.spacing.sm,
-    },
-    logoutText: {
-        color: theme.colors.primaryDark,
-        fontWeight: '600',
-    },
-
-    /* ------ modal novidades ------ */
-    modalOverlay: {
-        flex: 1,
-        backgroundColor: 'rgba(0,0,0,0.35)',
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: theme.spacing.lg,
-    },
-    modalContent: {
-        backgroundColor: '#fff',
-        borderRadius: theme.radius.md,
-        width: '100%',
-        padding: theme.spacing.md,
-    },
-    modalTitle: { fontSize: scale(16), fontWeight: '700', marginBottom: theme.spacing.sm },
-    modalItem: { fontSize: scale(14), marginBottom: theme.spacing.xs, color: '#2C3E50' },
-    modalButton: {
-        marginTop: theme.spacing.md,
-        alignSelf: 'flex-end',
-        paddingHorizontal: theme.spacing.md,
-        paddingVertical: theme.spacing.sm,
-        backgroundColor: theme.colors.primaryDark,
-        borderRadius: theme.radius.md,
-    },
-    modalButtonText: { color: '#fff', fontWeight: '600' },
+    logout: { flexDirection: 'row', alignItems: 'center', gap: 8, padding: 16 },
+    logoutText: { color: theme?.colors?.primaryDark ?? '#0A2647', fontWeight: '600' },
 });
 
 export default styles;
