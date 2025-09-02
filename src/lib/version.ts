@@ -7,7 +7,7 @@ import { getVersion as fetchVersion } from "../api/getVersion";
  const APK_PATH = "/Sistemas/SFISMobile/apk";
  const APK_NAME = "SFISMobile";
 
-//MAQUINA CRISPIMM
+//MAQUINA CRISPIM
 // const APK_HOST = "http://10.212.134.8";
 // const APK_PATH = "/Sistemas/SFISMobile/apk";
 // const APK_NAME = "SFISMobile";

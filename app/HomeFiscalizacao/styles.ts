@@ -6,7 +6,6 @@ const { width } = Dimensions.get('window');
 export const GAP = (theme?.spacing?.md as number) ?? 16;
 export const CARD_SIZE = Math.floor((width - GAP * 3) / 2);
 
-/* ---------- Gradientes (tuplas para o LinearGradient) ---------- */
 export const CARD_GRADIENT: readonly [ColorValue, ColorValue] = [
     theme?.colors?.primaryDark ?? '#0A2647',
     theme?.colors?.primary ?? '#1E3A59',

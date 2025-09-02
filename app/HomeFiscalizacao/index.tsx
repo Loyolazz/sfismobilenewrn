@@ -124,9 +124,6 @@ function CustomDrawerContent(props: any) {
         '';
     const matricula = user?.NRMatricula ? `Matrícula ${user.NRMatricula}` : '';
 
-    const perfilId = (user as any)?.IDPerfilFiscalizacao;
-
-
     return (
         <SafeAreaView style={styles.drawerSafe}>
             <StatusBar style="light" />
@@ -265,7 +262,7 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
-            <StatusBar style="light"/>
+            <StatusBar/>
 
             {/* Header */}
             <View style={styles.header}>
