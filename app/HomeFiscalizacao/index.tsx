@@ -6,17 +6,20 @@ import {
     Image,
     Modal,
     Pressable,
+    Platform,
 } from 'react-native';
-import {SafeAreaView, useSafeAreaInsets} from 'react-native-safe-area-context';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import {
     createDrawerNavigator,
     DrawerContentScrollView,
     DrawerItemList,
     DrawerNavigationOptions,
     DrawerNavigationProp,
+    useDrawerStatus,
 } from '@react-navigation/drawer';
 import {LinearGradient} from 'expo-linear-gradient';
 import {StatusBar} from 'expo-status-bar';
+import * as NavigationBar from 'expo-navigation-bar';
 
 import Icon from '@/src/components/Icon';
 import {useRouter, useLocalSearchParams} from 'expo-router';
@@ -126,7 +129,6 @@ function CustomDrawerContent(props: any) {
 
     return (
         <SafeAreaView style={styles.drawerSafe}>
-            <StatusBar style="light" />
             <DrawerContentScrollView
                 {...props}
                 contentContainerStyle={styles.drawerScrollContent}
@@ -221,7 +223,6 @@ function CustomDrawerContent(props: any) {
 
 /* ---------------------------------- Home --------------------------------- */
 function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any }) {
-    const insets = useSafeAreaInsets();
     const [userName, setUserName] = useState<string>('');
     const [showModal, setShowModal] = useState(false);
 
@@ -231,6 +232,13 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
             const first = s?.usuario?.NOUsuario?.split(' ')?.[0] ?? '';
             setUserName((first || 'Fiscal').toUpperCase());
         })();
+    }, []);
+
+    useEffect(() => {
+        if (Platform.OS === 'android') {
+            NavigationBar.setBackgroundColorAsync(theme.colors.surface);
+            NavigationBar.setButtonStyleAsync('dark');
+        }
     }, []);
 
     useEffect(() => {
@@ -251,6 +259,8 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
         []
     );
 
+    const drawerStatus = useDrawerStatus();
+    const isDrawerOpen = drawerStatus === 'open';
     const openDrawer = useCallback(() => navigation.openDrawer(), [navigation]);
     const closeModal = useCallback(() => {
         setShowModal(false);
@@ -261,8 +271,11 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
     const versaoStr = String(ultima?.versao ?? '—').replace(/^vers[aã]o\s*/i, '');
 
     return (
-        <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right', 'bottom']}>
-            <StatusBar/>
+        <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
+            <StatusBar
+                style={isDrawerOpen ? 'dark' : 'light'}
+                backgroundColor={isDrawerOpen ? theme.colors.surface : theme.colors.primaryDark}
+            />
 
             {/* Header */}
             <View style={styles.header}>
@@ -296,7 +309,7 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
                 keyboardShouldPersistTaps="handled"
                 contentContainerStyle={[
                     styles.scrollContent,
-                    {paddingBottom: insets.bottom + 16},
+                    {paddingBottom: 16},
                 ]}
             >
                 <View style={styles.section}>
@@ -327,9 +340,12 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
                         ))}
                     </View>
 
-                    <Text style={styles.versionText}>Versão WS: {versaoStr}</Text>
                 </View>
             </ScrollView>
+
+            <SafeAreaView edges={['bottom']} style={styles.footer}>
+                <Text style={styles.versionText}>Versão WS: {versaoStr}</Text>
+            </SafeAreaView>
 
             {/* Modal de novidades */}
             <Modal visible={showModal} transparent animationType="slide">
