@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 export default function FiscalizacaoRotina() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <Text style={styles.title}>FiscalizacaoRotina</Text>
     </SafeAreaView>
   );

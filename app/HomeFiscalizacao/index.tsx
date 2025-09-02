@@ -74,8 +74,9 @@ const defaultScreenOptions = ({
                               }: {
     navigation: DrawerNavigationProp<DrawerParamList>;
 }): DrawerNavigationOptions => ({
-    headerStyle: {backgroundColor: theme.colors.primaryDark},
+    headerStyle: {backgroundColor: theme.colors.primaryDark, height: 56},
     headerTintColor: theme.colors.surface,
+    headerTitleStyle: {fontSize: 18, fontWeight: '600'},
     headerTitleAlign: 'center',
     drawerActiveTintColor: theme.colors.primaryDark,
     headerLeft: () => (
@@ -276,8 +277,6 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
                 style={isDrawerOpen ? 'dark' : 'light'}
                 backgroundColor={isDrawerOpen ? theme.colors.surface : theme.colors.primaryDark}
             />
-
-
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
