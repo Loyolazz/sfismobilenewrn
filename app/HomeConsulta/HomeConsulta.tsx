@@ -5,7 +5,7 @@ import styles from './styles';
 
 export default function HomeConsulta() {
     return (
-        <SafeAreaView style={styles.container}>
+        <SafeAreaView style={styles.container} edges={['left', 'right']}>
             <Text style={styles.title}>SFISMobile</Text>
             <Link href="/Login">Ir para Login</Link>
         </SafeAreaView>

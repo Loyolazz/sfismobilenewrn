@@ -97,11 +97,14 @@ const styles = StyleSheet.create({
     },
 
     /* ---------- rodapé ---------- */
+    footer: {
+        backgroundColor: theme.colors.surface,
+    },
     versionText: {
         textAlign: 'center',
         fontSize: 12,
         color: '#8B98A9',
-        paddingVertical: 16,
+        paddingVertical: 4,
     },
 
     /* ===================== Drawer — NOVO VISUAL ===================== */

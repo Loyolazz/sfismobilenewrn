@@ -6,7 +6,7 @@ import { releases } from '@/src/utils/releases';
 
 export default function NovidadesVersao() {
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <ScrollView contentContainerStyle={styles.scroll}>
         {releases.map((rel) => (
           <View key={rel.versao} style={styles.section}>

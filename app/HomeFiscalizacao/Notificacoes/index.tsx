@@ -57,7 +57,7 @@ export default function Notificacoes() {
   }
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={styles.container} edges={['left', 'right']}>
       <View style={styles.header}>
         <TouchableOpacity onPress={() => goBack()}>
           <Icon name="arrow-back" size={24} color="#fff" />
