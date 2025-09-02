@@ -277,6 +277,7 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
                 backgroundColor={isDrawerOpen ? theme.colors.surface : theme.colors.primaryDark}
             />
 
+
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
