@@ -440,7 +440,7 @@ export default function HomeFiscalizacao() {
             <Drawer.Screen
                 name="NovidadesVersao"
                 component={NovidadesVersao}
-                options={{title: 'Novidades da Versão', drawerIcon: makeDrawerIcon('new-releases')}}
+                options={{title: 'Novidades da Versão', drawerIcon: makeDrawerIcon('newReleases')}}
             />
             <Drawer.Screen
                 name="SituacaoServico"

@@ -20,9 +20,9 @@ const styles = StyleSheet.create({
     /* ---------- base ---------- */
     safeArea: {
         flex: 1,
-        backgroundColor: theme?.colors?.background ?? '#EEF2F7',
+        backgroundColor: theme?.colors?.primaryDark ?? '#0A2647',
     },
-    scroll: { flex: 1 },
+    scroll: { flex: 1, backgroundColor: '#fff' },
     scrollContent: {
         paddingTop: 0, // cola no header
     },
