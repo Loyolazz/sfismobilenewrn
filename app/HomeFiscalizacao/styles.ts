@@ -97,6 +97,9 @@ const styles = StyleSheet.create({
     },
 
     /* ---------- rodapé ---------- */
+    footer: {
+        backgroundColor: theme.colors.surface,
+    },
     versionText: {
         textAlign: 'center',
         fontSize: 12,
