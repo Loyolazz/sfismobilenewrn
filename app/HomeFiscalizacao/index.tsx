@@ -277,7 +277,6 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
                 style={isDrawerOpen ? 'dark' : 'light'}
                 backgroundColor={isDrawerOpen ? theme.colors.surface : theme.colors.primaryDark}
             />
-
             {/* Header */}
             <View style={styles.header}>
                 <Pressable
@@ -440,7 +439,7 @@ export default function HomeFiscalizacao() {
             <Drawer.Screen
                 name="NovidadesVersao"
                 component={NovidadesVersao}
-                options={{title: 'Novidades da Versão', drawerIcon: makeDrawerIcon('new-releases')}}
+                options={{title: 'Novidades da Versão', drawerIcon: makeDrawerIcon('newReleases')}}
             />
             <Drawer.Screen
                 name="SituacaoServico"
