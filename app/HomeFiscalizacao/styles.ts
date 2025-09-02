@@ -104,7 +104,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontSize: 12,
         color: '#8B98A9',
-        paddingVertical: 16,
+        paddingVertical: 4,
     },
 
     /* ===================== Drawer — NOVO VISUAL ===================== */

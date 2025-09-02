@@ -6,6 +6,7 @@ import {
     Image,
     Modal,
     Pressable,
+    Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -14,6 +15,7 @@ import {
     DrawerItemList,
     DrawerNavigationOptions,
     DrawerNavigationProp,
+    useDrawerStatus,
 } from '@react-navigation/drawer';
 import {LinearGradient} from 'expo-linear-gradient';
 import {StatusBar} from 'expo-status-bar';
@@ -127,7 +129,6 @@ function CustomDrawerContent(props: any) {
 
     return (
         <SafeAreaView style={styles.drawerSafe}>
-            <StatusBar style="light" />
             <DrawerContentScrollView
                 {...props}
                 contentContainerStyle={styles.drawerScrollContent}
@@ -234,8 +235,10 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
     }, []);
 
     useEffect(() => {
-        NavigationBar.setBackgroundColorAsync(theme.colors.surface);
-        NavigationBar.setButtonStyleAsync('dark');
+        if (Platform.OS === 'android') {
+            NavigationBar.setBackgroundColorAsync(theme.colors.surface);
+            NavigationBar.setButtonStyleAsync('dark');
+        }
     }, []);
 
     useEffect(() => {
@@ -256,6 +259,8 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
         []
     );
 
+    const drawerStatus = useDrawerStatus();
+    const isDrawerOpen = drawerStatus === 'open';
     const openDrawer = useCallback(() => navigation.openDrawer(), [navigation]);
     const closeModal = useCallback(() => {
         setShowModal(false);
@@ -267,7 +272,11 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
 
     return (
         <SafeAreaView style={styles.safeArea} edges={['top', 'left', 'right']}>
-            <StatusBar style="light" backgroundColor={theme.colors.primaryDark} />
+            <StatusBar
+                style={isDrawerOpen ? 'dark' : 'light'}
+                backgroundColor={isDrawerOpen ? theme.colors.surface : theme.colors.primaryDark}
+            />
+
 
             {/* Header */}
             <View style={styles.header}>
