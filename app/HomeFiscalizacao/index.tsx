@@ -74,7 +74,7 @@ const defaultScreenOptions = ({
                               }: {
     navigation: DrawerNavigationProp<DrawerParamList>;
 }): DrawerNavigationOptions => ({
-    headerStyle: {backgroundColor: theme.colors.primaryDark, height: 56},
+    headerStyle: {backgroundColor: theme.colors.primaryDark},
     headerTintColor: theme.colors.surface,
     headerTitleStyle: {fontSize: 18, fontWeight: '600'},
     headerTitleAlign: 'center',
