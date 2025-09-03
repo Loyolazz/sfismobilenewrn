@@ -13,6 +13,7 @@ const icons = {
   description: require('../../assets/new_icons/description_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'),
   domain: require('../../assets/new_icons/domain_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'),
   home: require('../../assets/new_icons/home_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'),
+  'home-work': require('../../assets/new_icons/home_work_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'),
   'hourglass-empty': require('../../assets/new_icons/hourglass_empty_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'),
   info: require('../../assets/new_icons/domain_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'),
   logout: require('../../assets/new_icons/logout_48dp_FFFFFF_FILL0_wght400_GRAD0_opsz48.png'),

@@ -75,7 +75,7 @@ const defaultScreenOptions = ({
     navigation: DrawerNavigationProp<DrawerParamList>;
 }): DrawerNavigationOptions => ({
     headerStyle: {backgroundColor: theme.colors.primaryDark},
-    headerTintColor: theme.colors.surface,
+    //headerTintColor: theme.colors.surface,
     headerTitleStyle: {fontSize: 18, fontWeight: '600'},
     headerTitleAlign: 'center',
     drawerActiveTintColor: theme.colors.primaryDark,
@@ -85,7 +85,7 @@ const defaultScreenOptions = ({
             accessibilityRole="button"
             accessibilityLabel="Voltar"
             style={{paddingHorizontal: 8, height: 40, width: 40, alignItems: 'center', justifyContent: 'center'}}
-            android_ripple={{color: 'rgba(255,255,255,0.15)', radius: 20}}
+            //android_ripple={{color: 'rgba(255,255,255,0.15)', radius: 20}}
             hitSlop={8}
         >
             <Icon name="arrow-back" size={24} color={theme.colors.surface}/>
@@ -171,7 +171,7 @@ function CustomDrawerContent(props: any) {
                             {/* Unidade/UGA em pílula grande */}
                             {!!unidade && (
                                 <View style={styles.unidadePill}>
-                                    <Icon name="home-work" size={16} color="#0A2647" />
+                                    <Icon name="home-work" size={16} color="#0A2647"/>
                                     <Text style={styles.unidadePillText} numberOfLines={1} ellipsizeMode="tail">
                                         {unidade}
                                     </Text>
@@ -339,13 +339,10 @@ function HomeScreen({navigation, route}: { navigation: HomeScreenNav; route: any
                             </Pressable>
                         ))}
                     </View>
-
+                    <Text style={styles.versionText}>Versão WS: {versaoStr}</Text>
                 </View>
             </ScrollView>
 
-            <SafeAreaView edges={['bottom']} style={styles.footer}>
-                <Text style={styles.versionText}>Versão WS: {versaoStr}</Text>
-            </SafeAreaView>
 
             {/* Modal de novidades */}
             <Modal visible={showModal} transparent animationType="slide">

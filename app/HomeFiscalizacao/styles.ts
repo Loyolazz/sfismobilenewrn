@@ -224,6 +224,8 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         flexDirection: 'row',
         alignItems: 'center',
+        justifyContent: 'space-between',
+        gap: 6,
         maxWidth: '100%',
     },
     unidadePillText: {
