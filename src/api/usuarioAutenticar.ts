@@ -67,6 +67,13 @@ export async function usuarioAutenticar(
   // Detalha as informações do servidor retornadas pela API
   //console.log("Dados do servidor:", servidor);
 
+  // DSRetornoAutenticacao = 0 ou IDUsuario <= 0 indicam falha na autenticação
+  const authCode = Number((result as any)?.DSRetornoAutenticacao ?? 1);
+  const idUsuario = Number((result as any)?.IDUsuario ?? servidor.IDUsuario);
+  if (authCode === 0 || idUsuario <= 0) {
+    throw new Error("Usuário ou senha inválidos.");
+  }
+
   // Gera um token consistente (usa Token se existir; senão algum identificador estável)
   const token = String(
       servidor.Token ??
