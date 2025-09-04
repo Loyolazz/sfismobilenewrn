@@ -1,6 +1,7 @@
 import Constants from "expo-constants";
 import * as Linking from "expo-linking";
 import { getVersion as fetchVersion } from "../api/getVersion";
+import { Toast } from "toastify-react-native";
 
 //DES
  const APK_HOST = "http://10.61.0.40";
@@ -43,6 +44,7 @@ export async function ensureLatestVersion() {
   console.log("Versão disponibilizada pela API:", latest);
 
   if (latest && latest !== current) {
+    Toast.error("Versão desatualizada. Baixe a versão mais recente.");
     const url = `${APK_HOST}${APK_PATH}/${APK_NAME}-${latest}.apk`;
     await Linking.openURL(url);
     return false;

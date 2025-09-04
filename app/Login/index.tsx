@@ -18,6 +18,7 @@ import Constants from "expo-constants";
 import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import * as Application from "expo-application";
+import { Toast } from "toastify-react-native";
 
 import { usuarioAutenticar } from "@/src/api/usuarioAutenticar";
 import { saveSession, loadSession } from "@/src/services/session";
@@ -65,14 +66,26 @@ export default function LoginScreen() {
         setLoading(true);
         try {
             if (!usuario || !senha) {
-                setErro("Preencha usuário e senha.");
+                const msg = "Preencha usuário e senha.";
+                setErro(msg);
+                Toast.error(msg);
                 return;
             }
             const { token, servidor } = await usuarioAutenticar(usuario, senha);
             await saveSession({ token, usuario: servidor }, keepConnected, 14);
+            Toast.success("Login realizado com sucesso!");
             router.replace({ pathname: "/HomeFiscalizacao", params: { showReleases: "1" } });
         } catch (e: any) {
-            setErro(e?.message?.toString?.() ?? "Falha ao autenticar. Verifique suas credenciais.");
+            const raw = e?.message?.toString?.() || "";
+            if (raw.toLowerCase().includes("network")) {
+                const msg = "Erro de conexão. Verifique sua internet.";
+                setErro(msg);
+                Toast.error(msg);
+            } else {
+                const msg = raw || "Falha ao autenticar. Verifique suas credenciais.";
+                setErro(msg);
+                Toast.error(msg);
+            }
         } finally {
             setLoading(false);
         }
