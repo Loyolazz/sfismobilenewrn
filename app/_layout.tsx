@@ -10,8 +10,8 @@ export default function RootLayout() {
         <SafeAreaProvider>
             <ToastManager
                 config={{
-                    success: props => <AlertToast {...props} />, // tipo vem em props.type
-                    error: props => <AlertToast {...props} />,
+                    success: (props: any) => <AlertToast {...props} />, // tipo vem em props.type
+                    error: (props: any) => <AlertToast {...props} />,
                 }}
             />
             <StatusBar style="light" />

@@ -35,7 +35,10 @@ export default function HomeScreen({ navigation, route }: { navigation: HomeScre
     }, []);
 
     useEffect(() => {
-        if (route?.params?.showReleases) setShowModal(true);
+        const flag = route?.params?.showReleases;
+        if (flag === '1' || (Array.isArray(flag) && flag.includes('1'))) {
+            setShowModal(true);
+        }
     }, [route?.params?.showReleases]);
 
     type Item = { key: keyof DrawerParamList; title: string; icon: string };
@@ -55,6 +58,7 @@ export default function HomeScreen({ navigation, route }: { navigation: HomeScre
     const drawerStatus = useDrawerStatus();
     const isDrawerOpen = drawerStatus === 'open';
     const openDrawer = useCallback(() => navigation.openDrawer(), [navigation]);
+    const openNotifications = useCallback(() => navigation.navigate('Notificacoes'), [navigation]);
     const closeModal = useCallback(() => {
         setShowModal(false);
         navigation.setParams({ showReleases: undefined });
@@ -69,7 +73,7 @@ export default function HomeScreen({ navigation, route }: { navigation: HomeScre
                 style={isDrawerOpen ? 'dark' : 'light'}
                 backgroundColor={isDrawerOpen ? theme.colors.surface : theme.colors.primaryDark}
             />
-            <HomeHeader onMenuPress={openDrawer} />
+            <HomeHeader onMenuPress={openDrawer} onNotificationsPress={openNotifications} />
 
             <View style={styles.greetingBox}>
                 <Text style={styles.greetingText}>
