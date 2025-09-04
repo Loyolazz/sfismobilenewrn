@@ -1,266 +1,175 @@
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { create } from "xmlbuilder2";
 import { XMLParser } from "fast-xml-parser";
 
-/** URL padrão – SEMPRE https */
-const DEFAULT_SERVICE_URL = "https://sfismobile.antaq.gov.br/AntaqService/Services.asmx";
+const DEFAULT_URL = "https://sfismobile.antaq.gov.br/AntaqService/Services.asmx";
+let SERVICE_URL = DEFAULT_URL;
 
-/** URL atual utilizada pelo cliente (pode ser trocada via setServiceUrl) */
-let SERVICE_URL = sanitizeServiceUrl(DEFAULT_SERVICE_URL);
-
-/** Parser XML → JSON mantendo tags/atributos úteis */
 const parser = new XMLParser({ ignoreAttributes: false, removeNSPrefix: true });
 
-/** --------------------------------------------------------
- *  Sanitização/normalização da URL (evita https://https://,
- *  adiciona protocolo se faltar, colapsa //, força https
- *  para domínios *.antaq.gov.br)
- *  ------------------------------------------------------ */
-export function sanitizeServiceUrl(u: string): string {
+// --- URL ---
+
+function sanitizeUrl(u: string): string {
   let s = (u || "").trim();
-
-  // remover protocolos duplicados do começo (ex.: "https://https://")
-  s = s.replace(/^(https?:\/\/)+/i, (m) => (m.includes("https://") ? "https://" : "http://"));
-
-  // adicionar protocolo se faltar
+  s = s.replace(/^(https?:\/\/)+/i, (m) => (m.includes("https://") ? "https://" : "http://")); // remove duplicado
   if (!/^https?:\/\//i.test(s)) s = "https://" + s;
-
-  // colapsar // extras após o host
-  s = s.replace(/([^:]\/)\/+/g, "$1");
-
-  // tentar ajustar via WHATWG URL (se disponível no RN)
+  s = s.replace(/([^:]\/)\/+/g, "$1"); // colapsa //
   try {
     const uo = new URL(s);
-    // para *.antaq.gov.br sempre forçar https
-    if (/\.antaq\.gov\.br$/i.test(uo.hostname) && uo.protocol === "http:") {
-      uo.protocol = "https:";
-      s = uo.toString();
-    }
-    // remover barra final desnecessária
-    if (uo.pathname.endsWith("/") && !/\.asmx\/$/i.test(uo.pathname)) {
-      uo.pathname = uo.pathname.replace(/\/+$/, "");
-      s = uo.toString();
-    }
-  } catch {
-    // se a URL API não estiver disponível, seguimos com a versão "sanitizada" por regex
-  }
-
+    if (/\.antaq\.gov\.br$/i.test(uo.hostname)) uo.protocol = "https:"; // força https pra ANTAQ
+    s = uo.toString();
+  } catch { /* ok */ }
   return s;
 }
 
-/** Seta a URL do serviço em runtime com sanitização */
-export function setServiceUrl(next: string) {
-  SERVICE_URL = sanitizeServiceUrl(next);
-  console.log("[SOAP] SERVICE_URL ajustada para:", SERVICE_URL);
+function validateUrl(u: string): string {
+  const s = sanitizeUrl(u);
+  let url: URL;
+  try { url = new URL(s); } catch { throw new Error(`URL inválida: ${u}`); }
+  const host = url.hostname;
+  const hostOk =
+      host === "localhost" ||
+      /^\d{1,3}(\.\d{1,3}){3}$/.test(host) ||      // IPv4
+      /^\[?[a-fA-F0-9:]+\]?$/.test(host) ||        // IPv6
+      host.includes(".");                          // domínio
+  if (!hostOk) throw new Error(`Host inválido: ${host}`);
+  return url.toString();
 }
 
-/** Retorna a URL atual (útil para debug/UI) */
+export function setServiceUrl(next: string) {
+  SERVICE_URL = validateUrl(next);
+  console.log("[SOAP] URL =", SERVICE_URL);
+}
+
 export function getServiceUrl() {
   return SERVICE_URL;
 }
 
-/** --------------------------------------------------------
- *  Helpers de erro / retry
- *  ------------------------------------------------------ */
-function explainAxiosError(err: unknown, tag = "ERR") {
-  const ax = err as AxiosError;
-  console.warn(`[${tag}] message:`, ax.message);
-  // @ts-ignore
-  if ((ax as any)?.cause) console.warn(`[${tag}] cause:`, (ax as any).cause);
-  try {
-    // @ts-ignore
-    console.warn(`[${tag}] toJSON:`, JSON.stringify(ax.toJSON?.(), null, 2));
-  } catch {}
-  if (ax.response) {
-    console.warn(`[${tag}] status:`, ax.response.status);
-    console.warn(`[${tag}] headers:`, ax.response.headers);
-    const data = ax.response.data as any;
-    console.warn(`[${tag}] body:`, typeof data === "string" ? data.slice(0, 400) : data);
-  }
-}
+// --- util ---
 
 function isNetworkErr(e: any) {
   const msg = String(e?.message || "").toLowerCase();
   return e?.code === "ERR_NETWORK" || msg.includes("network error") || msg.includes("network request failed");
 }
 
-const sleep = (ms: number) => new Promise((res) => setTimeout(res, ms));
+function isCanceledErr(e: any) {
+  const msg = String(e?.message || "").toLowerCase().trim();
+  return e?.code === "ERR_CANCELED" || e?.name === "CanceledError" || msg === "canceled";
+}
 
-async function withRetry<T>(fn: () => Promise<T>, opts = { tries: 3, delays: [250, 600] }) {
-  let lastErr: any;
-  for (let i = 0; i < opts.tries; i++) {
-    try {
-      return await fn();
-    } catch (e) {
-      lastErr = e;
-      const isNet = isNetworkErr(e);
-      const isLast = i === opts.tries - 1;
-      if (!isNet || isLast) throw e;
-      const d = opts.delays[Math.min(i, opts.delays.length - 1)];
-      console.warn(`[NET] Retry ${i + 1}/${opts.tries - 1} em ${d}ms…`);
+const sleep = (ms: number) => new Promise((r) => setTimeout(r, ms));
+
+async function withRetry<T>(fn: () => Promise<T>, tries = 3, delays = [250, 600]) {
+  let err: any;
+  for (let i = 0; i < tries; i++) {
+    try { return await fn(); } catch (e) {
+      err = e;
+      if (isCanceledErr(e)) throw e;                 // não retenta cancelado
+      if (!isNetworkErr(e) || i === tries - 1) throw e;
+      const d = delays[Math.min(i, delays.length - 1)];
+      console.warn(`[NET] retry ${i + 1}/${tries - 1} em ${d}ms…`);
       await sleep(d);
     }
   }
-  throw lastErr;
+  throw err;
 }
 
-/** --------------------------------------------------------
- *  Construção do envelope SOAP
- *  ------------------------------------------------------ */
+// --- SOAP core ---
+
 function buildEnvelope(action: string, params?: Record<string, any>) {
   const root = create({ version: "1.0" })
       .ele("soap:Envelope", {
         "xmlns:soap": "http://www.w3.org/2003/05/soap-envelope",
         "xmlns:tem": "http://tempori.org",
       })
-      .ele("soap:Header")
-      .up()
+      .ele("soap:Header").up()
       .ele("soap:Body")
       .ele(`tem:${action}`);
-
   if (params) {
     for (const [k, v] of Object.entries(params)) {
-      if (v === null || v === undefined) root.ele(`tem:${k}`);
-      else root.ele(`tem:${k}`).txt(String(v));
+      v == null ? root.ele(`tem:${k}`) : root.ele(`tem:${k}`).txt(String(v));
     }
   }
   return root.end();
 }
 
-/** --------------------------------------------------------
- *  POST SOAP com:
- *   - URL sanitizada
- *   - retry para ERR_NETWORK
- *   - fallback 1.2 → 1.1
- *   - suporte a AbortSignal (dev: Fast Refresh / unmount)
- *  ------------------------------------------------------ */
+async function post12(url: string, action: string, xml: string, signal?: AbortSignal) {
+  return axios.post<string>(url, xml, {
+    transformRequest: (v) => v,
+    transitional: { forcedJSONParsing: false },
+    responseType: "text",
+    timeout: 30000,
+    signal,
+    headers: {
+      "Content-Type": `application/soap+xml; charset=utf-8; action="http://tempori.org/${action}"`,
+      "Accept": "application/soap+xml",
+    },
+  });
+}
+
+async function post11(url: string, action: string, xml: string, signal?: AbortSignal) {
+  return axios.post<string>(url, xml, {
+    transformRequest: (v) => v,
+    transitional: { forcedJSONParsing: false },
+    responseType: "text",
+    timeout: 30000,
+    signal,
+    headers: {
+      "Content-Type": "text/xml; charset=utf-8",
+      "SOAPAction": `"http://tempori.org/${action}"`,
+      "Accept": "text/xml",
+    },
+  });
+}
+
 async function axiosSoapPost(action: string, xmlBody: string, signal?: AbortSignal): Promise<string> {
-  let url = sanitizeServiceUrl(SERVICE_URL);
+  const url = validateUrl(SERVICE_URL);
 
-  const post12 = () =>
-      axios.post<string>(url, xmlBody, {
-        transformRequest: (v) => v,
-        transitional: { forcedJSONParsing: false },
-        responseType: "text",
-        timeout: 30000,
-        signal,
-        headers: {
-          "Content-Type": `application/soap+xml; charset=utf-8; action="http://tempori.org/${action}"`,
-          Accept: "application/soap+xml",
-        },
-      });
-
-  const post11 = () =>
-      axios.post<string>(url, xmlBody, {
-        transformRequest: (v) => v,
-        transitional: { forcedJSONParsing: false },
-        responseType: "text",
-        timeout: 30000,
-        signal,
-        headers: {
-          "Content-Type": "text/xml; charset=utf-8",
-          SOAPAction: `"http://tempori.org/${action}"`,
-          Accept: "text/xml",
-        },
-      });
-
-  // 1) Tenta SOAP 1.2 com retry para problemas de rede
+  // 1) SOAP 1.2 com retry só para erro de rede
   try {
-    const r12 = await withRetry(() => post12());
-    console.log("[SOAP12] status:", r12.status);
+    const r12 = await withRetry(() => post12(url, action, xmlBody, signal));
     return r12.data;
   } catch (e12) {
-    explainAxiosError(e12, "SOAP12");
-
-    // Se foi erro de rede, tentar 1 tentativa curta em 1.1 às vezes ajuda
-    if (isNetworkErr(e12)) {
-      try {
-        const r11net = await withRetry(() => post11(), { tries: 2, delays: [300] });
-        console.log("[SOAP11] status:", r11net.status);
-        return r11net.data;
-      } catch (e11net) {
-        explainAxiosError(e11net, "SOAP11(net)");
-        throw e11net;
-      }
-    }
-
-    // Se não foi rede (ex.: 415/500/etc.), tenta fallback normal para 1.1 sem retry
-    try {
-      const r11 = await post11();
-      console.log("[SOAP11] status:", r11.status);
-      return r11.data;
-    } catch (e11) {
-      explainAxiosError(e11, "SOAP11");
-      throw e11;
-    }
+    if (isCanceledErr(e12)) throw e12; // nada de fallback se cancelou
+    // 2) Fallback simples para SOAP 1.1 (sem retry)
+    const r11 = await post11(url, action, xmlBody, signal);
+    return r11.data;
   }
 }
 
-/** --------------------------------------------------------
- *  API pública
- *  ------------------------------------------------------ */
-export type SoapRequestOptions = {
-  signal?: AbortSignal;   // para cancelamento seguro em dev/unmount
-  urlOverride?: string;   // se quiser usar outra URL apenas nessa chamada
-};
+// --- API pública ---
 
-// @ts-ignore
+export type SoapRequestOptions = { signal?: AbortSignal };
+
 export async function soapRequest(action: string, params?: Record<string, any>, opts?: SoapRequestOptions) {
-  // override opcional de URL por chamada
-  if (opts?.urlOverride) {
-    const prev = SERVICE_URL;
-    try {
-      setServiceUrl(opts.urlOverride);
-      // @ts-ignore
-      const out = await soapRequest(action, params, { signal: opts.signal }); // chama recursivo sem override
-      return out;
-    } finally {
-      SERVICE_URL = prev; // restaura URL global
-    }
-  }
-
   const xml = buildEnvelope(action, params);
-  console.log("[SOAP] body >>>\n", xml);
-
   const raw = await axiosSoapPost(action, xml, opts?.signal);
-  console.log("[SOAP] raw(xml) <<<\n", (raw || "").slice(0, 800));
-
-  const parsed = parser.parse(raw);
-  console.log("[SOAP] parsed(json) <<<\n", JSON.stringify(parsed, null, 2));
-  return parsed;
+  return parser.parse(raw);
 }
 
-function pick<T = any>(obj: any, paths: string[]): T | undefined {
+// helper para extrair `${Action}Result`
+function pick(obj: any, paths: string[]): any {
   for (const p of paths) {
     const parts = p.split(".");
-    let cur: any = obj,
-        ok = true;
+    let cur = obj, ok = true;
     for (const k of parts) {
-      if (cur && Object.prototype.hasOwnProperty.call(cur, k)) cur = cur[k];
-      else {
-        ok = false;
-        break;
-      }
+      if (cur && Object.prototype.hasOwnProperty.call(cur, k)) cur = cur[k]; else { ok = false; break; }
     }
-    if (ok) return cur as T;
+    if (ok) return cur;
   }
   return undefined;
 }
 
-export function extractSoapResult(parsed: any, action: string): any {
-  const responseTag = `${action}Response`;
-  const resultTag = `${action}Result`;
-  const candidates = [
-    `Envelope.Body.${responseTag}.${resultTag}`,
-    `Envelope.Body.tem:${responseTag}.tem:${resultTag}`,
-    `soap:Envelope.soap:Body.${responseTag}.${resultTag}`,
-    `soap:Envelope.soap:Body.tem:${responseTag}.tem:${resultTag}`,
-    `${responseTag}.${resultTag}`,
-  ];
-  return pick(parsed, candidates);
+export function extractSoapResult(parsed: any, action: string) {
+  const R = `${action}Response`, X = `${action}Result`;
+  return pick(parsed, [
+    `Envelope.Body.${R}.${X}`,
+    `Envelope.Body.tem:${R}.tem:${X}`,
+    `${R}.${X}`,
+  ]);
 }
 
-/** Utilidade de conveniência para testes rápidos */
+// atalho de teste
 export async function getVersion(opts?: SoapRequestOptions) {
   const parsed = await soapRequest("GetVersion", undefined, opts);
   return String(extractSoapResult(parsed, "GetVersion") ?? "");

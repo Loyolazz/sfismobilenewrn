@@ -84,6 +84,7 @@ export default function HomeFiscalizacao() {
                     title: 'Minhas Fiscalizações',
                     drawerIcon: makeDrawerIcon('assignment'),
                     drawerItemStyle: { display: 'none' },
+                    headerTintColor: theme.colors.surface
                 }}
             />
             <Drawer.Screen
@@ -93,6 +94,7 @@ export default function HomeFiscalizacao() {
                     title: 'Fiscalizações de Rotina',
                     drawerIcon: makeDrawerIcon('sync'),
                     drawerItemStyle: { display: 'none' },
+                    headerTintColor: theme.colors.surface
                 }}
             />
             <Drawer.Screen
@@ -102,6 +104,7 @@ export default function HomeFiscalizacao() {
                     title: 'Consultar Autorizadas',
                     drawerIcon: makeDrawerIcon('search'),
                     drawerItemStyle: { display: 'none' },
+                    headerTintColor: theme.colors.surface
                 }}
             />
 
@@ -109,35 +112,67 @@ export default function HomeFiscalizacao() {
             <Drawer.Screen
                 name="RelatorioUsuario"
                 component={RelatorioUsuario}
-                options={{ title: 'Relatório do Usuário', drawerIcon: makeDrawerIcon('description') }}
+                options={{
+                    title: 'Relatório do Usuário',
+                    drawerIcon: makeDrawerIcon('description'),
+                    headerTintColor: theme.colors.surface
+                }}
             />
             <Drawer.Screen
                 name="Antaq"
                 component={Antaq}
-                options={{ title: 'A ANTAQ', drawerIcon: makeDrawerIcon('info') }}
+                options={{
+                    title: 'A ANTAQ',
+                    drawerIcon: makeDrawerIcon('info'),
+                    headerTintColor: theme.colors.surface
+            }}
             />
             <Drawer.Screen
                 name="Tutorial"
                 component={Tutorial}
-                options={{ title: 'Tutorial', drawerIcon: makeDrawerIcon('menu-book') }}
+                options={{
+                    title: 'Tutorial',
+                    drawerIcon: makeDrawerIcon('menu-book'),
+                    headerTintColor: theme.colors.surface
+                }}
             />
             <Drawer.Screen
                 name="NovidadesVersao"
                 component={NovidadesVersao}
-                options={{ title: 'Novidades da Versão', drawerIcon: makeDrawerIcon('newReleases') }}
+                options={{
+                    title: 'Novidades da Versão',
+                    drawerIcon: makeDrawerIcon('newReleases') ,
+                    headerTintColor: theme.colors.surface
+                }}
             />
             <Drawer.Screen
                 name="SituacaoServico"
                 component={SituacaoServico}
-                options={{ title: 'Situação do Serviço', drawerIcon: makeDrawerIcon('wifi') }}
+                options={{
+                    title: 'Situação do Serviço',
+                    drawerIcon: makeDrawerIcon('wifi'),
+                    headerTintColor: theme.colors.surface
+                }}
             />
 
             {/* Rotas ocultas */}
-            <Drawer.Screen name="EmAndamento" component={EmAndamento} options={{ drawerItemStyle: { display: 'none' } }} />
-            <Drawer.Screen name="PainelEmpresas" component={PainelEmpresas} options={{ drawerItemStyle: { display: 'none' } }} />
-            <Drawer.Screen name="EsquemasOperacionais" component={EsquemasOperacionais} options={{ drawerItemStyle: { display: 'none' } }} />
-            <Drawer.Screen name="ServicosNaoAutorizados" component={ServicosNaoAutorizados} options={{ drawerItemStyle: { display: 'none' } }} />
-            <Drawer.Screen name="Notificacoes" component={Notificacoes} options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="EmAndamento"
+                           component={EmAndamento}
+                           options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="PainelEmpresas"
+                           component={PainelEmpresas}
+                           options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="EsquemasOperacionais"
+                           component={EsquemasOperacionais}
+                           options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="ServicosNaoAutorizados"
+                           component={ServicosNaoAutorizados}
+                           options={{ drawerItemStyle: { display: 'none' } }} />
+            <Drawer.Screen name="Notificacoes"
+                           component={Notificacoes}
+                           options={{
+                               headerShown: false,
+                               drawerItemStyle: { display: 'none' } }} />
         </Drawer.Navigator>
     );
 }
