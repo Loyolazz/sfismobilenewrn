@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 import { LinearGradient } from "expo-linear-gradient";
 import { ensureLatestVersion } from "@/src/lib/version";
 import styles from './styles';
+import {extractSoapResult, soapRequest} from "@/src/api/antaq";
 
 export default function Splash() {
     const router = useRouter();
@@ -13,6 +14,24 @@ export default function Splash() {
         Constants.expoConfig?.version ??
         Constants.manifest?.version ??
         "1.2.11";
+
+    useEffect(() => {
+        const ac = new AbortController();
+        (async () => {
+            try {
+                const parsed = await soapRequest("GetVersion", undefined, { signal: ac.signal });
+                const v = extractSoapResult(parsed, "GetVersion");
+                console.log("Versão API =", v);
+            } catch (e: any) {
+                if (e?.name === "CanceledError" || e?.message === "canceled") {
+                    console.log("Chamada cancelada (unmount/refresh)");
+                } else {
+                    console.warn("Falha GetVersion:", e?.message || String(e));
+                }
+            }
+        })();
+        return () => ac.abort();
+    }, []);
 
     useEffect(() => {
         async function init() {
