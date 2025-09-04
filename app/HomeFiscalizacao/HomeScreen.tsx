@@ -17,14 +17,36 @@ type HomeScreenNav = DrawerNavigationProp<DrawerParamList, 'Home'>;
 
 export default function HomeScreen({ navigation, route }: { navigation: HomeScreenNav; route: any }) {
     const [userName, setUserName] = useState<string>('');
+    const [expiresIn, setExpiresIn] = useState<string>('');
     const [showModal, setShowModal] = useState(false);
 
+    const dayMs = 24 * 60 * 60 * 1000;
+
     useEffect(() => {
-        (async () => {
+        let mounted = true;
+        const update = async () => {
             const s = await loadSession();
             const first = s?.usuario?.NOUsuario?.split(' ')?.[0] ?? '';
-            setUserName((first || 'Fiscal').toUpperCase());
-        })();
+            if (mounted) {
+                setUserName((first || 'Fiscal').toUpperCase());
+                if (s?.expiresAt) {
+                    const diff = s.expiresAt - Date.now();
+                    if (diff > 0) {
+                        const days = Math.floor(diff / dayMs);
+                        const hours = Math.floor((diff % dayMs) / (60 * 60 * 1000));
+                        setExpiresIn(`${days}d ${hours}h`);
+                    } else {
+                        setExpiresIn('0d');
+                    }
+                }
+            }
+        };
+        update();
+        const id = setInterval(update, 60 * 60 * 1000);
+        return () => {
+            mounted = false;
+            clearInterval(id);
+        };
     }, []);
 
     useEffect(() => {
@@ -76,10 +98,13 @@ export default function HomeScreen({ navigation, route }: { navigation: HomeScre
             <HomeHeader onMenuPress={openDrawer} onNotificationsPress={openNotifications} />
 
             <View style={styles.greetingBox}>
-                <Text style={styles.greetingText}>
-                    Olá, <Text style={styles.greetingStrong}>{userName}</Text>!
-                </Text>
-                <Text style={styles.greetingSub}>O que deseja fazer hoje?</Text>
+                <View style={styles.greetingTexts}>
+                    <Text style={styles.greetingText}>
+                        Olá, <Text style={styles.greetingStrong}>{userName}</Text>!
+                    </Text>
+                    <Text style={styles.greetingSub}>O que deseja fazer hoje?</Text>
+                </View>
+                {expiresIn ? <Text style={styles.greetingCounter}>{expiresIn}</Text> : null}
             </View>
 
             <ScrollView

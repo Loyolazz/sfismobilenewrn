@@ -47,10 +47,15 @@ const styles = StyleSheet.create({
         marginTop: 0,
         borderTopLeftRadius: 0,
         borderTopRightRadius: 0,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
     },
+    greetingTexts: { flex: 1 },
     greetingText: { fontSize: 20, color: '#fff' },
     greetingStrong: { fontWeight: '700' },
     greetingSub: { color: '#fff', marginTop: 4, fontSize: 14, opacity: 0.9 },
+    greetingCounter: { color: '#fff', fontSize: 16, fontWeight: '600' },
 
     /* ---------- seção com padding lateral (grid + versão) ---------- */
     section: { paddingHorizontal: GAP },
