@@ -3,7 +3,6 @@ import { View, Text, Image, Pressable } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawer';
 import { LinearGradient } from 'expo-linear-gradient';
-
 import Icon from '@/src/components/Icon';
 import { useRouter } from 'expo-router';
 import { loadSession, clearSession } from '@/src/services/session';

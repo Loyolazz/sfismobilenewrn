@@ -1,4 +1,4 @@
-import { StyleSheet, Dimensions, type ColorValue } from 'react-native';
+import {StyleSheet, Dimensions, type ColorValue, Platform} from 'react-native';
 import theme from '@/src/theme';
 
 const { width } = Dimensions.get('window');
@@ -254,15 +254,21 @@ const styles = StyleSheet.create({
 
 // (mantém estes)
     drawerListCard: {
-        marginTop: 14,
-        marginHorizontal: 16,
-        borderRadius: 14,
-        overflow: 'hidden',
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.08,
-        shadowRadius: 6,
-        elevation: 2,
+        backgroundColor: 'transparent',   // sem fundo de “cartão”
+        marginHorizontal: 0,
+        marginTop: (theme?.spacing?.md ?? 16),
+        borderRadius: 0,
+        ...Platform.select({
+            android: {
+                elevation: 0,
+            },
+            ios: {
+                shadowColor: 'transparent',
+                shadowOpacity: 0,
+                shadowRadius: 0,
+                shadowOffset: { width: 0, height: 0 },
+            },
+        }),
     },
     drawerFooter: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 16 },
     logoutPill: {
