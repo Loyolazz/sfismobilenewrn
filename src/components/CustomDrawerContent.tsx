@@ -35,13 +35,15 @@ export default function CustomDrawerContent(props: any) {
     }, [router]);
 
     const nome = (user?.NOUsuario || '').toUpperCase();
-    const login = user?.EEFuncionario || user?.NOLoginUsuario || '';
+    const email = user?.EEFuncionario || '';
+    const login = user?.NOLoginUsuario || '';
     const unidade =
         (user as any)?.SGUnidade ||
         (user as any)?.NOUnidade ||
         (user as any)?.Unidade ||
         '';
-    const matricula = user?.NRMatricula ? `Matrícula ${user.NRMatricula}` : '';
+    const matriculaNum = user?.NRMatricula ?? (user as any)?.NRMatriculaServidor;
+    const matricula = matriculaNum ? `Matrícula ${matriculaNum}` : '';
 
     return (
         <SafeAreaView style={styles.drawerSafe}>
@@ -102,10 +104,26 @@ export default function CustomDrawerContent(props: any) {
                                         <Text style={styles.drawerChipSmText}>{matricula}</Text>
                                     </View>
                                 )}
-                                {!!login && (
+                                {!!email && (
+                                    <View style={styles.drawerChipSm}>
+                                        <Icon name="email" size={13} color="#0A2647" />
+                                        <Text
+                                            style={styles.drawerChipSmText}
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                        >
+                                            {email}
+                                        </Text>
+                                    </View>
+                                )}
+                                {!!login && login !== email && (
                                     <View style={styles.drawerChipSm}>
                                         <Icon name="account-circle" size={13} color="#0A2647" />
-                                        <Text style={styles.drawerChipSmText} numberOfLines={1} ellipsizeMode="tail">
+                                        <Text
+                                            style={styles.drawerChipSmText}
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                        >
                                             {login}
                                         </Text>
                                     </View>
