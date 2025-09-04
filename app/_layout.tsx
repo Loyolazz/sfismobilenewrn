@@ -1,12 +1,19 @@
-import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { Platform } from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
+import ToastManager from 'toastify-react-native';
+import AlertToast from '@/src/components/AlertToast';
 
 export default function RootLayout() {
     return (
         <SafeAreaProvider>
+            <ToastManager
+                config={{
+                    success: props => <AlertToast {...props} />, // tipo vem em props.type
+                    error: props => <AlertToast {...props} />,
+                }}
+            />
             <StatusBar style="light" />
             <Stack
                 screenOptions={{
