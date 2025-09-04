@@ -17,7 +17,10 @@
         "expo-build-properties",
         {
           "android": {
-            "minSdkVersion": 23
+            "minSdkVersion": 24,
+            "compileSdkVersion": 35,
+            "targetSdkVersion": 34,
+            "kotlinVersion": "2.0.21"
           }
         }
       ],
@@ -26,7 +29,8 @@
     "scheme": "sfismobile2",
     "ios": {
       "bundleIdentifier": "com.antaq.sfismobile2",
-      "supportsTablet": true
+      "supportsTablet": true,
+      "runtimeVersion": { "policy": "appVersion" }
     },
     "android": {
       "package": "com.antaq.sfismobile2",
@@ -39,10 +43,19 @@
         "foregroundImage": "./assets/ic_launcher.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "runtimeVersion": "1.0.0"
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c3ef2255-1c29-42a1-a7fc-43061fc78fa1"
+      }
+    },
+    "updates": {
+      "url": "https://u.expo.dev/c3ef2255-1c29-42a1-a7fc-43061fc78fa1"
     }
   }
 }
