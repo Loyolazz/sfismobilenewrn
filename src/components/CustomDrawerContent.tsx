@@ -8,7 +8,7 @@ import Icon from '@/src/components/Icon';
 import { useRouter } from 'expo-router';
 import { loadSession, clearSession } from '@/src/services/session';
 import type { Servidor } from '@/src/api/usuarioAutenticar';
-import styles, { DRAWER_BANNER_GRADIENT } from './styles';
+import styles, { DRAWER_BANNER_GRADIENT } from '../../app/HomeFiscalizacao/styles';
 import theme from '@/src/theme';
 
 export default function CustomDrawerContent(props: any) {

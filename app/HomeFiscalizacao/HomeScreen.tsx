@@ -11,7 +11,7 @@ import { loadSession } from '@/src/services/session';
 import { getUltimaVersao } from '@/src/utils/releases';
 import theme from '@/src/theme';
 import styles from './styles';
-import type { DrawerParamList } from './types';
+import type { DrawerParamList } from '@/src/types/types';
 
 type HomeScreenNav = DrawerNavigationProp<DrawerParamList, 'Home'>;
 

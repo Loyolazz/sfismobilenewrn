@@ -11,7 +11,7 @@ import Icon from '@/src/components/Icon';
 import theme from '@/src/theme';
 
 import HomeScreen from './HomeScreen';
-import CustomDrawerContent from './CustomDrawerContent';
+import CustomDrawerContent from '../../src/components/CustomDrawerContent';
 import MinhasFiscalizacoes from './MinhasFiscalizacoes';
 import FiscalizacaoRotina from './FiscalizacaoRotina';
 import ConsultarAutorizadas from './ConsultarAutorizadas';
@@ -25,7 +25,7 @@ import Tutorial from './Tutorial';
 import NovidadesVersao from './NovidadesVersao';
 import SituacaoServico from './SituacaoServico';
 import Notificacoes from './Notificacoes';
-import type { DrawerParamList } from './types';
+import type { DrawerParamList } from '@/src/types/types';
 
 const Drawer = createDrawerNavigator<DrawerParamList>();
 

@@ -26,13 +26,11 @@ import styles from "./styles";
 import Icon from "@/src/components/Icon";
 import theme from "@/src/theme";
 
-// ⚠️ Ajuste os caminhos se necessário
 const BG = require("../../assets/background/fundo-release.png");
 const LOGO = require("../../assets/logo.png");
 
 export default function LoginScreen() {
     const router = useRouter();
-
     const [usuario, setUsuario] = useState("");
     const [senha, setSenha] = useState("");
     const [showPassword, setShowPassword] = useState(false);
@@ -103,12 +101,10 @@ export default function LoginScreen() {
         <View style={styles.flex1}>
             <StatusBar style="light" translucent />
             <ImageBackground source={BG} style={styles.background} imageStyle={styles.backgroundImage}>
-                {/* Camada para leitura (gradient sutil sobre a foto) */}
                 <LinearGradient
                     colors={["rgba(0,0,0,0.25)", "rgba(0,0,0,0.65)"]}
                     style={StyleSheet.absoluteFillObject}
                 />
-
                 <SafeAreaView style={styles.safeArea}>
                     <KeyboardAvoidingView
                         style={styles.flex1}
