@@ -51,7 +51,7 @@ export default function LoginScreen() {
             try {
                 const s = await loadSession();
                 if (s?.token) {
-                    router.replace("/HomeFiscalizacao");
+                    router.replace({ pathname: "/HomeFiscalizacao", params: { showReleases: "1" } });
                     return;
                 }
             } catch {}
