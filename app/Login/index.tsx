@@ -8,23 +8,26 @@ import {
     Text,
     TextInput,
     View,
+    Image,
+    ImageBackground,
     StyleSheet,
-    // Image,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { LinearGradient } from "expo-linear-gradient";
 import Constants from "expo-constants";
+import { StatusBar } from "expo-status-bar";
 import { useRouter } from "expo-router";
 import * as Application from "expo-application";
 
-// API (segue o padrão soapRequest ≥ {servidor, ‘token’})
 import { usuarioAutenticar } from "@/src/api/usuarioAutenticar";
-
-// Sessão segura (14 dias) – use o seu session.ts
 import { saveSession, loadSession } from "@/src/services/session";
-import styles from './styles';
-import Icon from '@/src/components/Icon';
-import theme from '@/src/theme';
+import styles from "./styles";
+import Icon from "@/src/components/Icon";
+import theme from "@/src/theme";
+
+// ⚠️ Ajuste os caminhos se necessário
+const BG = require("../../assets/background/fundo-release.png");
+const LOGO = require("../../assets/logo.png");
 
 export default function LoginScreen() {
     const router = useRouter();
@@ -39,27 +42,24 @@ export default function LoginScreen() {
 
     const version = [
         Constants.expoConfig?.version ?? Application.nativeApplicationVersion ?? "dev",
-        Application.nativeBuildVersion ? `(${Application.nativeBuildVersion})` : ""
-    ].filter(Boolean).join(" ");
+        Application.nativeBuildVersion ? `(${Application.nativeBuildVersion})` : "",
+    ]
+        .filter(Boolean)
+        .join(" ");
 
-    // 1) Autologin se existir sessão válida
     useEffect(() => {
         (async () => {
             try {
-                const s = await loadSession(); // a sua função deve invalidar se expirou
+                const s = await loadSession();
                 if (s?.token) {
                     router.replace("/HomeFiscalizacao");
                     return;
                 }
-            } catch (e) {
-                // silencioso
-            } finally {
-                setChecking(false);
-            }
+            } catch {}
+            setChecking(false);
         })();
     }, [router]);
 
-    // 2) Handler Entrar
     async function onEntrar() {
         setErro(null);
         setLoading(true);
@@ -69,20 +69,10 @@ export default function LoginScreen() {
                 return;
             }
             const { token, servidor } = await usuarioAutenticar(usuario, senha);
-
-            // Confirma no console que o login ocorreu com sucesso
-            console.log("Token recebido:", token);
-            //console.log("Informações do usuário:", servidor);
-
-            // salva sessão com ou sem manter conectado
             await saveSession({ token, usuario: servidor }, keepConnected, 14);
-
-            router.replace({ pathname: "/HomeFiscalizacao", params: { showReleases: '1' } }); // substitui a rota atual (pós-login)
+            router.replace({ pathname: "/HomeFiscalizacao", params: { showReleases: "1" } });
         } catch (e: any) {
-            setErro(
-                e?.message?.toString?.() ??
-                "Falha ao autenticar. Verifique suas credenciais."
-            );
+            setErro(e?.message?.toString?.() ?? "Falha ao autenticar. Verifique suas credenciais.");
         } finally {
             setLoading(false);
         }
@@ -97,96 +87,97 @@ export default function LoginScreen() {
     }
 
     return (
-        <SafeAreaView style={styles.background}>
-            <LinearGradient
-                colors={[theme.colors.primary, theme.colors.primaryDark]}
-                style={StyleSheet.absoluteFillObject}
-            />
+        <View style={styles.flex1}>
+            <StatusBar style="light" translucent />
+            <ImageBackground source={BG} style={styles.background} imageStyle={styles.backgroundImage}>
+                {/* Camada para leitura (gradient sutil sobre a foto) */}
+                <LinearGradient
+                    colors={["rgba(0,0,0,0.25)", "rgba(0,0,0,0.65)"]}
+                    style={StyleSheet.absoluteFillObject}
+                />
 
-            <KeyboardAvoidingView
-                style={styles.flex1}
-                behavior={Platform.select({ ios: "padding", android: undefined }) || undefined}
-            >
-                <View style={styles.container}>
-                    {/* Descomente se tiver um logo */}
-                    {/* <Image
-            source={require("../../assets/icon/logo.png")}
-            resizeMode="contain"
-            style={styles.logo}
-          /> */}
-
-                    <Text style={styles.title}>Entrar</Text>
-
-                    <View style={styles.form}>
-                        <View style={styles.inputGroup}>
-                            <View style={{ marginRight: 8 }}>
-                                <Icon name="person" size={24} color="#9FB3C1" />
+                <SafeAreaView style={styles.safeArea}>
+                    <KeyboardAvoidingView
+                        style={styles.flex1}
+                        behavior={Platform.select({ ios: "padding", android: undefined }) || undefined}
+                    >
+                        <View style={styles.container}>
+                            <View style={styles.header}>
+                                <Image source={LOGO} resizeMode="contain" style={styles.logo} />
                             </View>
-                            <TextInput
-                                placeholder="Usuário / Matrícula"
-                                placeholderTextColor="#9FB3C1"
-                                value={usuario}
-                                onChangeText={setUsuario}
-                                style={styles.input}
-                                autoCapitalize="none"
-                                autoCorrect={false}
-                                returnKeyType="next"
-                            />
+
+                            <View style={styles.card}>
+                                <Text style={styles.title}>Entrar</Text>
+
+                                <View style={styles.form}>
+                                    <View style={styles.inputGroup}>
+                                        <Icon name="person" size={22} color="#9FB3C1" />
+                                        <TextInput
+                                            placeholder="Usuário / Matrícula"
+                                            placeholderTextColor="#9FB3C1"
+                                            value={usuario}
+                                            onChangeText={setUsuario}
+                                            style={styles.input}
+                                            autoCapitalize="none"
+                                            autoCorrect={false}
+                                            returnKeyType="next"
+                                            textContentType="username"
+                                        />
+                                    </View>
+
+                                    <View style={styles.inputGroup}>
+                                        <Icon name="lock" size={22} color="#9FB3C1" />
+                                        <TextInput
+                                            placeholder="Senha"
+                                            placeholderTextColor="#9FB3C1"
+                                            value={senha}
+                                            onChangeText={setSenha}
+                                            style={styles.input}
+                                            secureTextEntry={!showPassword}
+                                            returnKeyType="go"
+                                            onSubmitEditing={onEntrar}
+                                            textContentType="password"
+                                        />
+                                        <Pressable
+                                            onPress={() => setShowPassword(!showPassword)}
+                                            accessibilityRole="button"
+                                            accessibilityLabel={showPassword ? "Ocultar senha" : "Mostrar senha"}
+                                            style={styles.trailingIcon}
+                                        >
+                                            <Icon name={showPassword ? "visibility-off" : "visibility"} size={22} color="#9FB3C1" />
+                                        </Pressable>
+                                    </View>
+
+                                    <View style={styles.row}>
+                                        <Text style={styles.keepText}>Manter conectado (14 dias)</Text>
+                                        <Switch value={keepConnected} onValueChange={setKeepConnected} />
+                                    </View>
+
+                                    {erro ? <Text style={styles.error}>{erro}</Text> : null}
+
+                                    <Pressable
+                                        onPress={onEntrar}
+                                        disabled={loading || !usuario || !senha}
+                                        style={({ pressed }) => [
+                                            styles.button,
+                                            (loading || !usuario || !senha) && styles.buttonDisabled,
+                                            pressed && !(loading || !usuario || !senha) && styles.buttonPressed,
+                                        ]}
+                                    >
+                                        <LinearGradient
+                                            colors={[theme.colors.primary, theme.colors.primaryDark]}
+                                            style={styles.buttonBg}
+                                        />
+                                        {loading ? <ActivityIndicator color="#fff" /> : <Text style={styles.buttonText}>Entrar</Text>}
+                                    </Pressable>
+                                </View>
+
+                                <Text style={styles.version}>v{version}</Text>
+                            </View>
                         </View>
-
-                        <View style={styles.inputGroup}>
-                            <TextInput
-                                placeholder="Senha"
-                                placeholderTextColor="#9FB3C1"
-                                value={senha}
-                                onChangeText={setSenha}
-                                style={styles.input}
-                                secureTextEntry={!showPassword}
-                                returnKeyType="go"
-                                onSubmitEditing={onEntrar}
-                            />
-                            <Pressable
-                                onPress={() => setShowPassword(!showPassword)}
-                                accessibilityRole="button"
-                                accessibilityLabel={showPassword ? "Ocultar senha" : "Mostrar senha"}
-                                style={{ marginLeft: 8 }}
-                            >
-                                <Icon
-                                    name={showPassword ? 'visibility-off' : 'visibility'}
-                                    size={24}
-                                    color="#9FB3C1"
-                                />
-                            </Pressable>
-                        </View>
-
-                        <View style={styles.row}>
-                            <Text style={styles.keepText}>MANTER CONECTADO (14 dias)</Text>
-                            <Switch value={keepConnected} onValueChange={setKeepConnected} />
-                        </View>
-
-                        {erro ? <Text style={styles.error}>{erro}</Text> : null}
-
-                        <Pressable
-                            onPress={onEntrar}
-                            disabled={loading || !usuario || !senha}
-                            style={({ pressed }) => [
-                                styles.button,
-                                (loading || !usuario || !senha) && styles.buttonDisabled,
-                                pressed && !(loading || !usuario || !senha) && styles.buttonPressed,
-                            ]}
-                        >
-                            {loading ? (
-                                <ActivityIndicator color="#fff" />
-                            ) : (
-                                <Text style={styles.buttonText}>Entrar</Text>
-                            )}
-                        </Pressable>
-                    </View>
-
-                    <Text style={styles.version}>v{version}</Text>
-                </View>
-            </KeyboardAvoidingView>
-        </SafeAreaView>
+                    </KeyboardAvoidingView>
+                </SafeAreaView>
+            </ImageBackground>
+        </View>
     );
 }
-

@@ -1,86 +1,136 @@
-import { StyleSheet } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 import theme from "@/src/theme";
 
+const { width } = Dimensions.get("window");
+const P = 20;
+
 export default StyleSheet.create({
+    flex1: { flex: 1 },
+
+    // Fundo com imagem
     background: {
         flex: 1,
-        backgroundColor: theme.colors.surface,
+        backgroundColor: theme?.colors?.primaryDark ?? "#072236",
     },
-    flex1: {
+    backgroundImage: {
+        width: "100%",
+        height: "100%",
+    },
+
+    safeArea: {
         flex: 1,
     },
-    center: {
+
+    container: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        paddingHorizontal: P,
+        paddingBottom: P,
     },
-    container: {
-        flex: 1,
-        justifyContent: "center",
-        paddingHorizontal: 24,
+
+    header: {
+        alignItems: "center",
+        marginBottom: 12,
     },
+    logo: {
+        width: Math.min(160, width * 0.5),
+        height: 175,
+    },
+
+    card: {
+        width: "100%",
+        maxWidth: 420,
+        borderRadius: 16,
+        padding: P,
+        backgroundColor: "rgba(8, 29, 46, 0.66)", // vidro fake
+        borderWidth: StyleSheet.hairlineWidth,
+        borderColor: "rgba(255,255,255,0.12)",
+    },
+
     title: {
-        fontSize: 28,
-        fontWeight: "bold",
-        color: theme.colors.surface,
-        textAlign: "center",
-        marginBottom: 24,
+        color: "#fff",
+        fontSize: 22,
+        fontWeight: "700",
+        marginBottom: 12,
     },
+
     form: {
-        marginTop: 16,
+        gap: 12,
     },
+
     inputGroup: {
         flexDirection: "row",
         alignItems: "center",
-        backgroundColor: theme.colors.surface,
+        gap: 10,
+        backgroundColor: "rgba(255,255,255,0.06)",
         borderRadius: 12,
+        borderWidth: 1,
+        borderColor: "rgba(255,255,255,0.12)",
         paddingHorizontal: 12,
-        marginBottom: 16,
-        height: 50,
+        height: 52,
     },
+
     input: {
         flex: 1,
+        color: "#EAF2F8",
         fontSize: 16,
-        color: theme.colors.text,
+        paddingVertical: 0,
     },
+
+    trailingIcon: {
+        paddingLeft: 6,
+        paddingVertical: 6,
+    },
+
     row: {
         flexDirection: "row",
-        justifyContent: "space-between",
         alignItems: "center",
-        marginVertical: 12,
+        justifyContent: "space-between",
+        marginTop: 4,
     },
     keepText: {
+        color: "#C9D6DE",
         fontSize: 12,
-        color: theme.colors.text,
+        letterSpacing: 0.2,
     },
+
     error: {
-        color: theme.colors.error,
-        textAlign: "center",
-        marginBottom: 12,
+        color: "#FF6B6B",
+        fontSize: 13,
+        marginTop: 4,
     },
+
     button: {
-        backgroundColor: theme.colors.primary,
+        height: 52,
         borderRadius: 12,
         alignItems: "center",
         justifyContent: "center",
-        height: 50,
-        marginTop: 16,
+        overflow: "hidden", // para recortar o gradient
+        marginTop: 4,
+    },
+    buttonBg: {
+        ...StyleSheet.absoluteFillObject,
+    },
+    buttonText: {
+        color: "#fff",
+        fontWeight: "700",
+        fontSize: 16,
+        letterSpacing: 0.3,
     },
     buttonDisabled: {
         opacity: 0.5,
     },
     buttonPressed: {
-        opacity: 0.8,
+        transform: [{ scale: 0.99 }],
     },
-    buttonText: {
-        color: "#fff",
-        fontSize: 16,
-        fontWeight: "bold",
-    },
+
     version: {
-        marginTop: 32,
-        fontSize: 12,
         textAlign: "center",
-        color: "#ccc",
+        color: "#BFD0DA",
+        fontSize: 12,
+        marginTop: 14,
     },
+
+    center: { alignItems: "center", justifyContent: "center" },
 });
