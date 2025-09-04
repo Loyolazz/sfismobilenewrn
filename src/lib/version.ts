@@ -26,7 +26,7 @@ import { Toast } from "toastify-react-native";
 export function getAppVersion() {
   return (
     Constants.expoConfig?.version ??
-    Constants.manifest?.version ??
+    (Constants.manifest as any)?.version ??
     "0.0.0"
   );
 }

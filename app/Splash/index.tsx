@@ -12,7 +12,7 @@ export default function Splash() {
     const router = useRouter();
     const version =
         Constants.expoConfig?.version ??
-        Constants.manifest?.version ??
+        (Constants.manifest as any)?.version ??
         "1.2.11";
 
     useEffect(() => {
