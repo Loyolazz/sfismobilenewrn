@@ -25,9 +25,7 @@ import { Toast } from "toastify-react-native";
 
 export function getAppVersion() {
   return (
-    Constants.expoConfig?.version ??
-    (Constants.manifest as any)?.version ??
-    "0.0.0"
+      Constants.expoConfig?.version ?? "1.2.11"
   );
 }
 
@@ -39,7 +37,6 @@ export async function ensureLatestVersion() {
   const current = getAppVersion();
   const latest = await fetchVersion();
 
-  // Exibe a versão atual do app e a versão disponível na API
   console.log("Versão atual do app:", current);
   console.log("Versão disponibilizada pela API:", latest);
 
