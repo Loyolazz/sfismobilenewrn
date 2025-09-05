@@ -36,8 +36,7 @@ android {
     applicationId 'com.antaq.sfismobile2'
     minSdkVersion rootProject.ext.minSdkVersion
     targetSdkVersion rootProject.ext.targetSdkVersion
-    kotlinVersion = "1.9.24"
-    versionCode 12
+    versionCode 1
     versionName "1.2.11"
   }
 

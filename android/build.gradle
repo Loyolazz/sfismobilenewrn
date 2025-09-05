@@ -1,4 +1,3 @@
-// Top-level build file where you can add configuration options common to all sub-projects/modules.
 
 buildscript {
   repositories {
@@ -8,21 +7,17 @@ buildscript {
   dependencies {
     classpath('com.android.tools.build:gradle')
     classpath('com.facebook.react:react-native-gradle-plugin')
-    classpath('org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.24')
+    classpath('org.jetbrains.kotlin:kotlin-gradle-plugin:2.0.21')
   }
 }
 
-/** >>> BLOCO EXT (valores globais usados pelos módulos Android) <<< */
+
 ext {
-  // SDKs recomendados (Expo SDK 53 / RN recente)
-  minSdkVersion = 24
+  minSdkVersion     = 24
   compileSdkVersion = 35
-  targetSdkVersion = 34
-
-  // NDK padrão (ajuste se o seu projeto já usa outro)
-  ndkVersion = "26.1.10909125"
-
-  // buildToolsVersion pode ser omitido no AGP 8+, mas se quiser forçar:
+  targetSdkVersion  = 34
+  kotlinVersion     = "2.0.21"
+  ndkVersion        = "26.1.10909125"
   // buildToolsVersion = "35.0.0"
 }
 
@@ -36,12 +31,7 @@ def reactNativeAndroidDir = new File(
 
 allprojects {
   repositories {
-    // React Native binaries vindos do npm
-    maven {
-      url(reactNativeAndroidDir)
-    }
-
-    // Repositórios principais (google primeiro)
+    maven { url(reactNativeAndroidDir) }
     google()
     mavenCentral()
     maven { url 'https://www.jitpack.io' }
